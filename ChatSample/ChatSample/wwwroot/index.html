@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>SignalR Simple Chat</title>
+    <style type="text/css">
+        .container {
+            background-color: #99CCFF;
+            border: thick solid #808080;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <input type="text" id="message" />
+        <input type="button" id="sendmessage" value="Send" />
+        <!--<input type="hidden" id="displayname" />-->
+        <ul id="discussion"></ul>
+    </div>
+    <!--Script references. -->
+    <!--Reference the SignalR library. -->
+    <script src="scripts/signalr-client.min.js"></script>
+    <!--Add script to update the page and send messages.-->
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            var messageInput = document.getElementById('message');
+
+            // Get the user name and store it to prepend to messages.
+            var name = prompt('Enter your name:', '');
+            // Set initial focus to message input box.
+            messageInput.focus();
+
+            var connection = new signalR.HubConnection('/chat');
+
+            // Create a function that the hub can call to broadcast messages.
+            connection.on('broadcastMessage', function (name, message) {
+                // Html encode display name and message.
+                var encodedName = name;
+                var encodedMsg = message;
+                // Add the message to the page.
+                var liElement = document.createElement('li');
+                liElement.innerHTML = '<strong>' + encodedName + '</strong>:&nbsp;&nbsp;' + encodedMsg;
+                document.getElementById('discussion').append(liElement);
+            });
+
+            // Start the connection.
+            connection.start().then(function () {
+                document.getElementById('sendmessage').addEventListener('click', function (event) {
+                    // Call the Send method on the hub.
+                    connection.invoke('send', name, messageInput.value);
+
+                    // Clear text box and reset focus for next comment.
+                    messageInput.value = '';
+                    messageInput.focus();
+                    event.preventDefault();
+                });
+            });
+        });
+    </script>
+</body>
+</html>
