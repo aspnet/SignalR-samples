@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "websocket": "^1.0.24",
+    "xmlhttprequest": "^1.8.0",
+    "msgpack5": "^3.5.1",
+    "eventsource": "^1.0.5",
+    "atob": "^2.0.3",
+    "btoa": "^1.1.2"
+  },
+  "files": [
+    "src/**/*"
+  ],
+  "devDependencies": {
+    "@aspnet/signalr-client": "~1.0.0-alpha1",
+    "@types/node": "^8.0.28"
+  }
+}
