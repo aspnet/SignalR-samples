@@ -7,7 +7,7 @@ import * as EventSource from "eventsource";
 (<any>global).btoa = require("btoa");
 (<any>global).atob = require("atob");
 
-const hubConnection : signalR.HubConnection = new signalR.HubConnection("http://localhost:5000/signalr");
+const hubConnection : signalR.HubConnection = new signalR.HubConnection("http://localhost:5000/stocks");
 
 hubConnection.start().then(() => {
     hubConnection.invoke("GetMarketState").then(function (state : string): void {

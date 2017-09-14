@@ -17,7 +17,7 @@ namespace CsharpClient
         static async Task Run()
         {
             var connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:5000/signalr")
+                .WithUrl("http://localhost:5000/stocks")
                 .WithConsoleLogger()
                 .WithMessagePackProtocol()
                 .WithTransport(TransportType.WebSockets)

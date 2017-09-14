@@ -19,16 +19,8 @@ var stockTickerBody = stockTicker.getElementsByTagName('ul')[0];
 var up = '▲';
 var down = '▼';
 
-let connection = new signalR.HubConnection("/signalr", { logging: signalR.LogLevel.Trace });
+let connection = new signalR.HubConnection("/stocks");
 connection.start().then(function () {
-    while (stockTableBody.firstChild) {
-        stockTableBody.removeChild(stockTableBody.firstChild);
-    }
-
-    while (stockTickerBody.firstChild) {
-        stockTickerBody.removeChild(stockTickerBody.firstChild);
-    }
-
     connection.invoke("GetAllStocks").then(function (stocks) {
         for (let i = 0; i < stocks.length; i++) {
             displayStock(stocks[i]);

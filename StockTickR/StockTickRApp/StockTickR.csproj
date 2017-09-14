@@ -11,8 +11,4 @@
     <PackageReference Include="System.Reactive.Linq" Version="3.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha1-final" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\Home\" />
-  </ItemGroup>
 </Project>

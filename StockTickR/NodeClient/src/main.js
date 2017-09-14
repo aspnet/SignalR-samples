@@ -7,7 +7,7 @@ global.WebSocket = require("websocket").w3cwebsocket;
 global.EventSource = EventSource;
 global.btoa = require("btoa");
 global.atob = require("atob");
-const hubConnection = new signalR.HubConnection("http://localhost:5000/signalr");
+const hubConnection = new signalR.HubConnection("http://localhost:5000/stocks");
 hubConnection.start().then(() => {
     hubConnection.invoke("GetMarketState").then(function (state) {
         if (state === "Open") {
