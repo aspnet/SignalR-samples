@@ -5,10 +5,5 @@
     },
     "include": [
         "src/main.ts"
-    ],
-    "paths": {
-        "*": [
-            "node_modules/@aspnet/signalr-client/dist/src/*"
-        ]
-    }
+    ]
 }
