@@ -20,7 +20,14 @@
     </div>
     <!--Script references. -->
     <!--Reference the SignalR library. -->
-    <script src="scripts/signalr-client.min.js"></script>
+    <script>
+            if (typeof Promise === 'undefined') {
+                document.write('<script type="text/javascript" src="scripts/signalr-clientES5-1.0.0-alpha1-final.js"><\/script>');
+            }
+            else {
+                document.write('<script type="text/javascript" src="scripts/signalr-client-1.0.0-alpha1-final.js"><\/script>');
+            }
+    </script>
     <!--Add script to update the page and send messages.-->
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
@@ -41,7 +48,7 @@
                 // Add the message to the page.
                 var liElement = document.createElement('li');
                 liElement.innerHTML = '<strong>' + encodedName + '</strong>:&nbsp;&nbsp;' + encodedMsg;
-                document.getElementById('discussion').append(liElement);
+                document.getElementById('discussion').appendChild(liElement);
             });
 
             // Start the connection.
