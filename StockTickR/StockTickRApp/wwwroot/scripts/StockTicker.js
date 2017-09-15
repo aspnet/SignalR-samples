@@ -19,8 +19,11 @@ var stockTickerBody = stockTicker.getElementsByTagName('ul')[0];
 var up = '▲';
 var down = '▼';
 
-let connection = new signalR.HubConnection("/signalr", { logging: signalR.LogLevel.Trace });
-connection.start().then(function () {
+var pos = 30;
+var tickerInterval;
+stockTickerBody.style.marginLeft = '30px';
+
+function initialize() {
     while (stockTableBody.firstChild) {
         stockTableBody.removeChild(stockTableBody.firstChild);
     }
@@ -28,63 +31,24 @@ connection.start().then(function () {
     while (stockTickerBody.firstChild) {
         stockTickerBody.removeChild(stockTickerBody.firstChild);
     }
-
-    connection.invoke("GetAllStocks").then(function (stocks) {
-        for (let i = 0; i < stocks.length; i++) {
-            displayStock(stocks[i]);
-        }
-    });
-
-    connection.invoke("GetMarketState").then(function (state) {
-        if (state === 'Open') {
-            marketOpened();
-            startStreaming();
-        } else {
-            marketClosed();
-        }
-    });
-
-    document.getElementById('open').onclick = function () {
-        connection.invoke("OpenMarket");
-    }
-
-    document.getElementById('close').onclick = function () {
-        connection.invoke("CloseMarket");
-    }
-
-    document.getElementById('reset').onclick = function () {
-        connection.invoke("Reset").then(function () {
-            connection.invoke("GetAllStocks").then(function (stocks) {
-                for (let i = 0; i < stocks.length; ++i) {
-                    displayStock(stocks[i]);
-                }
-            });
-        });
-    }
-});
-
-connection.on("marketOpened", function () {
-    marketOpened();
-    startStreaming();
-});
-
-connection.on("marketClosed", function () {
-    marketClosed();
-});
-
-function startStreaming() {
-    connection.stream("StreamStocks").subscribe({
-        close: false,
-        next: displayStock,
-        error: function (err) {
-            logger.log(err);
-        }
-    });
 }
 
-var pos = 30;
-var tickerInterval;
-stockTickerBody.style.marginLeft = '30px';
+function openMarket() {
+    marketOpened();
+    startStreaming();
+}
+
+function closeMarket() {
+    marketClosed();
+}
+
+function changeMarketState(state) {
+    if (state === 'Open') {
+        marketOpened();
+    } else {
+        marketClosed();
+    }
+}
 
 function moveTicker() {
     pos--;
@@ -93,6 +57,12 @@ function moveTicker() {
     }
 
     stockTickerBody.style.marginLeft = pos + 'px';
+}
+
+function displayStocks(stocks) {
+    for (let i = 0; i < stocks.length; ++i) {
+        displayStock(stocks[i]);
+    }
 }
 
 function marketOpened() {
