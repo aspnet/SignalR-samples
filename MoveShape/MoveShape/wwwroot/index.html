@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <script src="lib/signalr-client-1.0.0-alpha1-final.js"></script>
+    <script type="text/javascript">
+            if (typeof Promise === 'undefined') {
+                document.write('<script type="text/javascript" src="lib/signalr-clientES5-1.0.0-alpha1-final.js"><\/script>');
+            }
+            else {
+                document.write('<script type="text/javascript" src="lib/signalr-client-1.0.0-alpha1-final.js"><\/script>');
+            }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"
+            integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+            crossorigin="anonymous"></script>
+    <script
+      src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+      integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+      crossorigin="anonymous"></script>
+    <title>MoveShape</title>
+    <style>
+        #shape {
+            width: 100px;
+            height: 100px;
+            background-color: red;
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+    <div id="shape"></div>    
+    <script>
+        $shape = $("#shape");
+        var connection = new signalR.HubConnection('/shapeHub');
+         
+        connection.on('shapeMoved', function(x, y) {
+            console.log('X: ' + x + ' Y: ' + y);
+            $shape.css({ left: x, top: y });
+        });
+
+        connection.start().then(
+            $shape.draggable({
+                drag: function () {
+                    connection.invoke("MoveShape", this.offsetLeft, this.offsetTop || 0);
+                }
+            })
+        );
+    </script>
+</body>
+</html>
