@@ -3,6 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <script src="lib/signalr-client-1.0.0-alpha1-final.js"></script>
+    <script type="text/javascript">
+            if (typeof Promise === 'undefined') {
+                document.write('<script type="text/javascript" src="lib/signalr-clientES5-1.0.0-alpha1-final.js"><\/script>');
+            }
+            else {
+                document.write('<script type="text/javascript" src="lib/signalr-client-1.0.0-alpha1-final.js"><\/script>');
+            }
+    </script>
     <script src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
