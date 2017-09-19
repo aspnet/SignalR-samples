@@ -26,7 +26,7 @@
     </style>
 </head>
 <body>
-    <canvas id="canvas" width="800" height="500" onmouseout="mouseOut()"></canvas>
+    <canvas id="canvas" width="800" height="500" onmouseout="clearMousePositions()"></canvas>
     <select id="color">
         <option value="black">Black</option>
         <option value="red">Red</option>
@@ -49,15 +49,13 @@
             last_mousex = mousex = parseInt(e.clientX - canvasx);
             last_mousey = mousey = parseInt(e.clientY - canvasy);
             mousedown = true;
-            connection.invoke('mousedown');
         });
 
         $(canvas).on('mouseup', function (e) {
             mousedown = false;
-            connection.invoke('mouseup');
         });
 
-        var drawCanvas = function (x, y, prev_x, prev_y, clr) {
+        var drawCanvas = function (prev_x, prev_y, x, y, clr) {
             ctx.beginPath();
             console.log("X: " + x + " Y: " + y);
             ctx.globalCompositeOperation = 'source-over';
@@ -76,7 +74,7 @@
 
             if ((last_mousex > 0 && last_mousey > 0) && mousedown) {
                 drawCanvas(mousex, mousey, last_mousex, last_mousey, clr);
-                connection.invoke('draw', mousex, mousey, clr);
+                connection.invoke('draw', last_mousex, last_mousey, mousex, mousey, clr);
             }
             last_mousex = mousex;
             last_mousey = mousey;
@@ -88,35 +86,14 @@
         var connection = new signalR.HubConnection('/draw');
         connection.start();
 
-        connection.on("mouse-down", function () {
-            mouse_down = true;
-        });
-
-        connection.on('mouse-up', function () {
-            mouse_down = false;
-            clearMousePositions();
-        });
-
-        connection.on('mouse-out', function () {
-            clearMousePositions();
-        });
-
-        mouseOut = function () {
-            connection.invoke('mouseout');
-        }
-
         clearMousePositions = function () {
             last_mousex = 0;
             last_mousey = 0;
         }
 
-        connection.on('draw', function (x, y, clr) {
+        connection.on('draw', function (prev_x, prev_y, x, y, clr) {
             console.log("X: " + x + " Y: " + y);
-            if ((last_mousex > 0 && last_mousey > 0) && mouse_down) {
-                drawCanvas(x, y, last_mousex, last_mousey, clr);
-            }
-            last_mousex = x;
-            last_mousey = y;
+            drawCanvas(prev_x, prev_y, x, y, clr);
         });
 
     </script>

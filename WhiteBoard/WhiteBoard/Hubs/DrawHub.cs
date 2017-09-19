@@ -6,24 +6,9 @@ namespace WhiteBoard.Hubs
 {
     public class DrawHub : Hub
     {
-        public Task MouseUp()
+        public Task Draw(int prevX, int prevY, int x, int y, string color)
         {
-            return Clients.AllExcept(new List<string> { Context.ConnectionId }).InvokeAsync("mouse-up");
-        }
-
-        public Task MouseDown()
-        {
-            return Clients.AllExcept(new List<string> { Context.ConnectionId }).InvokeAsync("mouse-down");
-        }
-
-        public Task MouseOut()
-        {
-            return Clients.All.InvokeAsync("mouse-out");
-        }
-
-        public Task Draw(int x, int y, string color)
-        {
-            return Clients.AllExcept(new List<string> { Context.ConnectionId }).InvokeAsync("draw", x, y, color);
+            return Clients.AllExcept(new List<string> { Context.ConnectionId }).InvokeAsync("draw", prevX, prevY, x, y, color);
         }
     }
 }
