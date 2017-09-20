@@ -27,7 +27,6 @@ namespace WhiteBoard
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
             app.UseFileServer();
             app.UseSignalR(routes =>
             {
