@@ -35,7 +35,6 @@
         var connection = new signalR.HubConnection('/shapeHub');
          
         connection.on('shapeMoved', function(x, y) {
-            console.log('X: ' + x + ' Y: ' + y);
             $shape.css({ left: x, top: y });
         });
 
