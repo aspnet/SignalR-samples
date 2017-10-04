@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Sockets;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace SignalRChatSample
@@ -29,7 +30,7 @@ namespace SignalRChatSample
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("chat");
+                routes.MapHub<ChatHub>("chat", options => { options.Transports = TransportType.All; });
             });
         }
     }
