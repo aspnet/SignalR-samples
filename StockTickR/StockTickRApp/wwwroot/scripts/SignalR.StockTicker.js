@@ -12,8 +12,8 @@ if (!String.prototype.supplant) {
 
 var stockTable = document.getElementById('stockTable');
 var stockTableBody = stockTable.getElementsByTagName('tbody')[0];
-var rowTemplate = '<td>{Symbol}</td><td>{Price}</td><td>{DayOpen}</td><td>{DayHigh}</td><td>{DayLow}</td><td class="changeValue"><span class="dir {DirectionClass}">{Direction}</span> {Change}</td><td>{PercentChange}</td>';
-var tickerTemplate = '<span class="symbol">{Symbol}</span> <span class="price">{Price}</span> <span class="changeValue"><span class="dir {DirectionClass}">{Direction}</span> {Change} ({PercentChange})</span>';
+var rowTemplate = '<td>{symbol}</td><td>{price}</td><td>{DayOpen}</td><td>{DayHigh}</td><td>{dayLow}</td><td class="changeValue"><span class="dir {directionClass}">{direction}</span> {change}</td><td>{percentChange}</td>';
+var tickerTemplate = '<span class="symbol">{symbol}</span> <span class="price">{price}</span> <span class="changeValue"><span class="dir {directionClass}">{direction}</span> {Change} ({percentChange})</span>';
 var stockTicker = document.getElementById('stockTicker');
 var stockTickerBody = stockTicker.getElementsByTagName('ul')[0];
 var up = '▲';
@@ -113,14 +113,14 @@ function addOrReplaceStock(table, stock, type, template) {
     var child = createStockNode(stock, type, template);
 
     // try to replace
-    var stockNode = document.querySelector(type + "[data-symbol=" + stock.Symbol + "]");
+    var stockNode = document.querySelector(type + "[data-symbol=" + stock.symbol + "]");
     if (stockNode) {
         var change = stockNode.querySelector(".changeValue");
         var prevChange = parseFloat(change.childNodes[1].data);
-        if (prevChange > stock.Change) {
+        if (prevChange > stock.change) {
             child.className = "decrease";
         }
-        else if (prevChange < stock.Change) {
+        else if (prevChange < stock.change) {
             child.className = "increase";
         }
         else {
@@ -134,17 +134,17 @@ function addOrReplaceStock(table, stock, type, template) {
 }
 
 function formatStock(stock) {
-    stock.Price = stock.Price.toFixed(2);
-    stock.PercentChange = (stock.PercentChange * 100).toFixed(2) + '%';
-    stock.Direction = stock.Change === 0 ? '' : stock.Change >= 0 ? up : down;
-    stock.DirectionClass = stock.Change === 0 ? 'even' : stock.Change >= 0 ? 'up' : 'down';
+    stock.price = stock.price.toFixed(2);
+    stock.percentChange = (stock.percentChange * 100).toFixed(2) + '%';
+    stock.direction = stock.change === 0 ? '' : stock.change >= 0 ? up : down;
+    stock.directionClass = stock.change === 0 ? 'even' : stock.change >= 0 ? 'up' : 'down';
     return stock;
 }
 
 function createStockNode(stock, type, template) {
     var child = document.createElement(type);
-    child.setAttribute('data-symbol', stock.Symbol);
-    child.setAttribute('class', stock.Symbol);
+    child.setAttribute('data-symbol', stock.symbol);
+    child.setAttribute('class', stock.symbol);
     child.innerHTML = template.supplant(stock);
     return child;
 }
