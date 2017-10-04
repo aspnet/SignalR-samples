@@ -44,3 +44,4 @@ dist/
 global.json
 BenchmarkDotNet.Artifacts/
 korebuild-lock.txt
+package-lock.json
