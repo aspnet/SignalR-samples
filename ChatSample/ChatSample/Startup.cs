@@ -30,7 +30,7 @@ namespace SignalRChatSample
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ChatHub>("chat", options => { options.Transports = TransportType.All; });
+                routes.MapHub<ChatHub>("chat");
             });
         }
     }
