@@ -2,13 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <script src="lib/signalr-client-1.0.0-alpha1-final.js"></script>
     <script type="text/javascript">
             if (typeof Promise === 'undefined') {
-                document.write('<script type="text/javascript" src="lib/signalr-clientES5-1.0.0-alpha1-final.js"><\/script>');
+                document.write('<script type="text/javascript" src="lib/signalr-clientES5-1.0.0-alpha2-final.js"><\/script>');
             }
             else {
-                document.write('<script type="text/javascript" src="lib/signalr-client-1.0.0-alpha1-final.js"><\/script>');
+                document.write('<script type="text/javascript" src="lib/signalr-client-1.0.0-alpha2-final.js"><\/script>');
             }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.js"
@@ -29,11 +28,11 @@
     </style>
 </head>
 <body>
-    <div id="shape"></div>    
+    <div id="shape"></div>
     <script>
         $shape = $("#shape");
         var connection = new signalR.HubConnection('/shapeHub');
-         
+
         connection.on('shapeMoved', function(x, y) {
             $shape.css({ left: x, top: y });
         });

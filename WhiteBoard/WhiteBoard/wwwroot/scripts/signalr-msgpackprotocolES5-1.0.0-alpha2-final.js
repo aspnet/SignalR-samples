@@ -2,19 +2,20 @@
 "use strict";
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 Object.defineProperty(exports, "__esModule", { value: true });
 var TextMessageFormat;
 (function (TextMessageFormat) {
-    const RecordSeparator = String.fromCharCode(0x1e);
+    var RecordSeparator = String.fromCharCode(0x1e);
     function write(output) {
-        return `${output}${RecordSeparator}`;
+        return "" + output + RecordSeparator;
     }
     TextMessageFormat.write = write;
     function parse(input) {
         if (input[input.length - 1] != RecordSeparator) {
             throw new Error("Message is incomplete.");
         }
-        let messages = input.split(RecordSeparator);
+        var messages = input.split(RecordSeparator);
         messages.pop();
         return messages;
     }
@@ -22,47 +23,57 @@ var TextMessageFormat;
 })(TextMessageFormat = exports.TextMessageFormat || (exports.TextMessageFormat = {}));
 var BinaryMessageFormat;
 (function (BinaryMessageFormat) {
+    // The length prefix of binary messages is encoded as VarInt. Read the comment in
+    // the BinaryMessageParser.TryParseMessage for details.
     function write(output) {
-        // .byteLength does is undefined in IE10
-        let size = output.byteLength || output.length;
-        let buffer = new Uint8Array(size + 8);
-        // javascript bitwise operators only support 32-bit integers
-        for (let i = 7; i >= 4; i--) {
-            buffer[i] = size & 0xff;
-            size = size >> 8;
-        }
-        buffer.set(output, 8);
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
+        var size = output.byteLength || output.length;
+        var lenBuffer = [];
+        do {
+            var sizePart = size & 0x7f;
+            size = size >> 7;
+            if (size > 0) {
+                sizePart |= 0x80;
+            }
+            lenBuffer.push(sizePart);
+        } while (size > 0);
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
+        size = output.byteLength || output.length;
+        var buffer = new Uint8Array(lenBuffer.length + size);
+        buffer.set(lenBuffer, 0);
+        buffer.set(output, lenBuffer.length);
         return buffer.buffer;
     }
     BinaryMessageFormat.write = write;
     function parse(input) {
-        let result = [];
-        let uint8Array = new Uint8Array(input);
-        // 8 - the length prefix size
-        for (let offset = 0; offset < input.byteLength;) {
-            if (input.byteLength < offset + 8) {
-                throw new Error("Cannot read message size");
+        var result = [];
+        var uint8Array = new Uint8Array(input);
+        var maxLengthPrefixSize = 5;
+        var numBitsToShift = [0, 7, 14, 21, 28];
+        for (var offset = 0; offset < input.byteLength;) {
+            var numBytes = 0;
+            var size = 0;
+            var byteRead = void 0;
+            do {
+                byteRead = uint8Array[offset + numBytes];
+                size = size | (byteRead & 0x7f) << numBitsToShift[numBytes];
+                numBytes++;
+            } while (numBytes < Math.min(maxLengthPrefixSize, input.byteLength - offset) && (byteRead & 0x80) != 0);
+            if ((byteRead & 0x80) !== 0 && numBytes < maxLengthPrefixSize) {
+                throw new Error("Cannot read message size.");
             }
-            // Note javascript bitwise operators only support 32-bit integers - for now cutting bigger messages.
-            // Tracking bug https://github.com/aspnet/SignalR/issues/613
-            if (!(uint8Array[offset] == 0 && uint8Array[offset + 1] == 0 && uint8Array[offset + 2] == 0
-                && uint8Array[offset + 3] == 0 && (uint8Array[offset + 4] & 0x80) == 0)) {
-                throw new Error("Messages bigger than 2147483647 bytes are not supported");
+            if (numBytes === maxLengthPrefixSize && byteRead > 7) {
+                throw new Error("Messages bigger than 2GB are not supported.");
             }
-            let size = 0;
-            for (let i = 4; i < 8; i++) {
-                size = (size << 8) | uint8Array[offset + i];
-            }
-            if (uint8Array.byteLength >= (offset + 8 + size)) {
+            if (uint8Array.byteLength >= offset + numBytes + size) {
                 // IE does not support .slice() so use subarray
-                result.push(uint8Array.slice
-                    ? uint8Array.slice(offset + 8, offset + 8 + size)
-                    : uint8Array.subarray(offset + 8, offset + 8 + size));
+                result.push(uint8Array.slice ? uint8Array.slice(offset + numBytes, offset + numBytes + size) : uint8Array.subarray(offset + numBytes, offset + numBytes + size));
+            } else {
+                throw new Error("Incomplete message.");
             }
-            else {
-                throw new Error("Incomplete message");
-            }
-            offset = offset + 8 + size;
+            offset = offset + numBytes + size;
         }
         return result;
     }
@@ -74,110 +85,144 @@ var BinaryMessageFormat;
 "use strict";
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require("babel-runtime/helpers/createClass");
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 Object.defineProperty(exports, "__esModule", { value: true });
-const Formatters_1 = require("./Formatters");
-const msgpack5 = require("msgpack5");
-class MessagePackHubProtocol {
-    constructor() {
+var Formatters_1 = require("./Formatters");
+var msgpack5 = require("msgpack5");
+
+var MessagePackHubProtocol = function () {
+    function MessagePackHubProtocol() {
+        (0, _classCallCheck3.default)(this, MessagePackHubProtocol);
+
         this.name = "messagepack";
         this.type = 2 /* Binary */;
     }
-    parseMessages(input) {
-        return Formatters_1.BinaryMessageFormat.parse(input).map(m => this.parseMessage(m));
-    }
-    parseMessage(input) {
-        if (input.length == 0) {
-            throw new Error("Invalid payload.");
+
+    (0, _createClass3.default)(MessagePackHubProtocol, [{
+        key: "parseMessages",
+        value: function parseMessages(input) {
+            var _this = this;
+
+            return Formatters_1.BinaryMessageFormat.parse(input).map(function (m) {
+                return _this.parseMessage(m);
+            });
         }
-        let msgpack = msgpack5();
-        let properties = msgpack.decode(new Buffer(input));
-        if (properties.length == 0 || !(properties instanceof Array)) {
-            throw new Error("Invalid payload.");
+    }, {
+        key: "parseMessage",
+        value: function parseMessage(input) {
+            if (input.length == 0) {
+                throw new Error("Invalid payload.");
+            }
+            var msgpack = msgpack5();
+            var properties = msgpack.decode(new Buffer(input));
+            if (properties.length == 0 || !(properties instanceof Array)) {
+                throw new Error("Invalid payload.");
+            }
+            var messageType = properties[0];
+            switch (messageType) {
+                case 1 /* Invocation */:
+                    return this.createInvocationMessage(properties);
+                case 2 /* Result */:
+                    return this.createStreamItemMessage(properties);
+                case 3 /* Completion */:
+                    return this.createCompletionMessage(properties);
+                default:
+                    throw new Error("Invalid message type.");
+            }
         }
-        let messageType = properties[0];
-        switch (messageType) {
-            case 1 /* Invocation */:
-                return this.createInvocationMessage(properties);
-            case 2 /* Result */:
-                return this.createStreamItemMessage(properties);
-            case 3 /* Completion */:
-                return this.createCompletionMessage(properties);
-            default:
-                throw new Error("Invalid message type.");
+    }, {
+        key: "createInvocationMessage",
+        value: function createInvocationMessage(properties) {
+            if (properties.length != 5) {
+                throw new Error("Invalid payload for Invocation message.");
+            }
+            return {
+                type: 1 /* Invocation */
+                , invocationId: properties[1],
+                nonblocking: properties[2],
+                target: properties[3],
+                arguments: properties[4]
+            };
         }
-    }
-    createInvocationMessage(properties) {
-        if (properties.length != 5) {
-            throw new Error("Invalid payload for Invocation message.");
+    }, {
+        key: "createStreamItemMessage",
+        value: function createStreamItemMessage(properties) {
+            if (properties.length != 3) {
+                throw new Error("Invalid payload for stream Result message.");
+            }
+            return {
+                type: 2 /* Result */
+                , invocationId: properties[1],
+                item: properties[2]
+            };
         }
-        return {
-            type: 1 /* Invocation */,
-            invocationId: properties[1],
-            nonblocking: properties[2],
-            target: properties[3],
-            arguments: properties[4]
-        };
-    }
-    createStreamItemMessage(properties) {
-        if (properties.length != 3) {
-            throw new Error("Invalid payload for stream Result message.");
+    }, {
+        key: "createCompletionMessage",
+        value: function createCompletionMessage(properties) {
+            if (properties.length < 3) {
+                throw new Error("Invalid payload for Completion message.");
+            }
+            var errorResult = 1;
+            var voidResult = 2;
+            var nonVoidResult = 3;
+            var resultKind = properties[2];
+            if (resultKind === voidResult && properties.length != 3 || resultKind !== voidResult && properties.length != 4) {
+                throw new Error("Invalid payload for Completion message.");
+            }
+            var completionMessage = {
+                type: 3 /* Completion */
+                , invocationId: properties[1],
+                error: null,
+                result: null
+            };
+            switch (resultKind) {
+                case errorResult:
+                    completionMessage.error = properties[3];
+                    break;
+                case nonVoidResult:
+                    completionMessage.result = properties[3];
+                    break;
+            }
+            return completionMessage;
         }
-        return {
-            type: 2 /* Result */,
-            invocationId: properties[1],
-            item: properties[2]
-        };
-    }
-    createCompletionMessage(properties) {
-        if (properties.length < 3) {
-            throw new Error("Invalid payload for Completion message.");
+    }, {
+        key: "writeMessage",
+        value: function writeMessage(message) {
+            switch (message.type) {
+                case 1 /* Invocation */:
+                    return this.writeInvocation(message);
+                case 2 /* Result */:
+                case 3 /* Completion */:
+                    throw new Error("Writing messages of type '" + message.type + "' is not supported.");
+                default:
+                    throw new Error("Invalid message type.");
+            }
         }
-        const errorResult = 1;
-        const voidResult = 2;
-        const nonVoidResult = 3;
-        let resultKind = properties[2];
-        if ((resultKind === voidResult && properties.length != 3) ||
-            (resultKind !== voidResult && properties.length != 4)) {
-            throw new Error("Invalid payload for Completion message.");
+    }, {
+        key: "writeInvocation",
+        value: function writeInvocation(invocationMessage) {
+            var msgpack = msgpack5();
+            var payload = msgpack.encode([1 /* Invocation */, invocationMessage.invocationId, invocationMessage.nonblocking, invocationMessage.target, invocationMessage.arguments]);
+            return Formatters_1.BinaryMessageFormat.write(payload.slice());
         }
-        let completionMessage = {
-            type: 3 /* Completion */,
-            invocationId: properties[1],
-            error: null,
-            result: null
-        };
-        switch (resultKind) {
-            case errorResult:
-                completionMessage.error = properties[3];
-                break;
-            case nonVoidResult:
-                completionMessage.result = properties[3];
-                break;
-        }
-        return completionMessage;
-    }
-    writeMessage(message) {
-        switch (message.type) {
-            case 1 /* Invocation */:
-                return this.writeInvocation(message);
-            case 2 /* Result */:
-            case 3 /* Completion */:
-                throw new Error(`Writing messages of type '${message.type}' is not supported.`);
-            default:
-                throw new Error("Invalid message type.");
-        }
-    }
-    writeInvocation(invocationMessage) {
-        let msgpack = msgpack5();
-        let payload = msgpack.encode([1 /* Invocation */, invocationMessage.invocationId,
-            invocationMessage.nonblocking, invocationMessage.target, invocationMessage.arguments]);
-        return Formatters_1.BinaryMessageFormat.write(payload.slice());
-    }
-}
+    }]);
+    return MessagePackHubProtocol;
+}();
+
 exports.MessagePackHubProtocol = MessagePackHubProtocol;
 
 }).call(this,require("buffer").Buffer)
-},{"./Formatters":1,"buffer":7,"msgpack5":14}],3:[function(require,module,exports){
+},{"./Formatters":1,"babel-runtime/helpers/classCallCheck":5,"babel-runtime/helpers/createClass":6,"buffer":10,"msgpack5":34}],3:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -671,7 +716,47 @@ var objectKeys = Object.keys || function (obj) {
 };
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"util/":35}],4:[function(require,module,exports){
+},{"util/":55}],4:[function(require,module,exports){
+module.exports = { "default": require("core-js/library/fn/object/define-property"), __esModule: true };
+},{"core-js/library/fn/object/define-property":11}],5:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+
+exports.default = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+},{}],6:[function(require,module,exports){
+"use strict";
+
+exports.__esModule = true;
+
+var _defineProperty = require("../core-js/object/define-property");
+
+var _defineProperty2 = _interopRequireDefault(_defineProperty);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      (0, _defineProperty2.default)(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+},{"../core-js/object/define-property":4}],7:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -787,7 +872,7 @@ function fromByteArray (uint8) {
   return parts.join('')
 }
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function (Buffer){
 var DuplexStream = require('readable-stream/duplex')
   , util         = require('util')
@@ -1071,9 +1156,9 @@ BufferList.prototype.destroy = function destroy () {
 module.exports = BufferList
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":7,"readable-stream/duplex":20,"util":35}],6:[function(require,module,exports){
+},{"buffer":10,"readable-stream/duplex":40,"util":55}],9:[function(require,module,exports){
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 /*!
  * The buffer module from node.js, for the browser.
@@ -2866,7 +2951,215 @@ function isnan (val) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"base64-js":4,"ieee754":10,"isarray":13}],8:[function(require,module,exports){
+},{"base64-js":7,"ieee754":30,"isarray":33}],11:[function(require,module,exports){
+require('../../modules/es6.object.define-property');
+var $Object = require('../../modules/_core').Object;
+module.exports = function defineProperty(it, key, desc) {
+  return $Object.defineProperty(it, key, desc);
+};
+
+},{"../../modules/_core":14,"../../modules/es6.object.define-property":27}],12:[function(require,module,exports){
+module.exports = function (it) {
+  if (typeof it != 'function') throw TypeError(it + ' is not a function!');
+  return it;
+};
+
+},{}],13:[function(require,module,exports){
+var isObject = require('./_is-object');
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+},{"./_is-object":23}],14:[function(require,module,exports){
+var core = module.exports = { version: '2.5.1' };
+if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
+
+},{}],15:[function(require,module,exports){
+// optional / simple context binding
+var aFunction = require('./_a-function');
+module.exports = function (fn, that, length) {
+  aFunction(fn);
+  if (that === undefined) return fn;
+  switch (length) {
+    case 1: return function (a) {
+      return fn.call(that, a);
+    };
+    case 2: return function (a, b) {
+      return fn.call(that, a, b);
+    };
+    case 3: return function (a, b, c) {
+      return fn.call(that, a, b, c);
+    };
+  }
+  return function (/* ...args */) {
+    return fn.apply(that, arguments);
+  };
+};
+
+},{"./_a-function":12}],16:[function(require,module,exports){
+// Thank's IE8 for his funny defineProperty
+module.exports = !require('./_fails')(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+},{"./_fails":19}],17:[function(require,module,exports){
+var isObject = require('./_is-object');
+var document = require('./_global').document;
+// typeof document.createElement is 'object' in old IE
+var is = isObject(document) && isObject(document.createElement);
+module.exports = function (it) {
+  return is ? document.createElement(it) : {};
+};
+
+},{"./_global":20,"./_is-object":23}],18:[function(require,module,exports){
+var global = require('./_global');
+var core = require('./_core');
+var ctx = require('./_ctx');
+var hide = require('./_hide');
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var IS_WRAP = type & $export.W;
+  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var expProto = exports[PROTOTYPE];
+  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
+  var key, own, out;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    if (own && key in exports) continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function (C) {
+      var F = function (a, b, c) {
+        if (this instanceof C) {
+          switch (arguments.length) {
+            case 0: return new C();
+            case 1: return new C(a);
+            case 2: return new C(a, b);
+          } return new C(a, b, c);
+        } return C.apply(this, arguments);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
+    if (IS_PROTO) {
+      (exports.virtual || (exports.virtual = {}))[key] = out;
+      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
+      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
+    }
+  }
+};
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+module.exports = $export;
+
+},{"./_core":14,"./_ctx":15,"./_global":20,"./_hide":21}],19:[function(require,module,exports){
+module.exports = function (exec) {
+  try {
+    return !!exec();
+  } catch (e) {
+    return true;
+  }
+};
+
+},{}],20:[function(require,module,exports){
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+},{}],21:[function(require,module,exports){
+var dP = require('./_object-dp');
+var createDesc = require('./_property-desc');
+module.exports = require('./_descriptors') ? function (object, key, value) {
+  return dP.f(object, key, createDesc(1, value));
+} : function (object, key, value) {
+  object[key] = value;
+  return object;
+};
+
+},{"./_descriptors":16,"./_object-dp":24,"./_property-desc":25}],22:[function(require,module,exports){
+module.exports = !require('./_descriptors') && !require('./_fails')(function () {
+  return Object.defineProperty(require('./_dom-create')('div'), 'a', { get: function () { return 7; } }).a != 7;
+});
+
+},{"./_descriptors":16,"./_dom-create":17,"./_fails":19}],23:[function(require,module,exports){
+module.exports = function (it) {
+  return typeof it === 'object' ? it !== null : typeof it === 'function';
+};
+
+},{}],24:[function(require,module,exports){
+var anObject = require('./_an-object');
+var IE8_DOM_DEFINE = require('./_ie8-dom-define');
+var toPrimitive = require('./_to-primitive');
+var dP = Object.defineProperty;
+
+exports.f = require('./_descriptors') ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
+};
+
+},{"./_an-object":13,"./_descriptors":16,"./_ie8-dom-define":22,"./_to-primitive":26}],25:[function(require,module,exports){
+module.exports = function (bitmap, value) {
+  return {
+    enumerable: !(bitmap & 1),
+    configurable: !(bitmap & 2),
+    writable: !(bitmap & 4),
+    value: value
+  };
+};
+
+},{}],26:[function(require,module,exports){
+// 7.1.1 ToPrimitive(input [, PreferredType])
+var isObject = require('./_is-object');
+// instead of the ES6 spec version, we didn't implement @@toPrimitive case
+// and the second argument - flag - preferred type is a string
+module.exports = function (it, S) {
+  if (!isObject(it)) return it;
+  var fn, val;
+  if (S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (typeof (fn = it.valueOf) == 'function' && !isObject(val = fn.call(it))) return val;
+  if (!S && typeof (fn = it.toString) == 'function' && !isObject(val = fn.call(it))) return val;
+  throw TypeError("Can't convert object to primitive value");
+};
+
+},{"./_is-object":23}],27:[function(require,module,exports){
+var $export = require('./_export');
+// 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
+$export($export.S + $export.F * !require('./_descriptors'), 'Object', { defineProperty: require('./_object-dp').f });
+
+},{"./_descriptors":16,"./_export":18,"./_object-dp":24}],28:[function(require,module,exports){
 (function (Buffer){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -2977,7 +3270,7 @@ function objectToString(o) {
 }
 
 }).call(this,{"isBuffer":require("../../is-buffer/index.js")})
-},{"../../is-buffer/index.js":12}],9:[function(require,module,exports){
+},{"../../is-buffer/index.js":32}],29:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -3281,7 +3574,7 @@ function isUndefined(arg) {
   return arg === void 0;
 }
 
-},{}],10:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = nBytes * 8 - mLen - 1
@@ -3367,7 +3660,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],11:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -3392,7 +3685,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],12:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -3415,14 +3708,14 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],13:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 var toString = {}.toString;
 
 module.exports = Array.isArray || function (arr) {
   return toString.call(arr) == '[object Array]';
 };
 
-},{}],14:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict'
 
 var Buffer = require('safe-buffer').Buffer
@@ -3508,7 +3801,7 @@ function msgpack (options) {
 
 module.exports = msgpack
 
-},{"./lib/decoder":15,"./lib/encoder":16,"./lib/streams":17,"assert":3,"bl":5,"safe-buffer":30}],15:[function(require,module,exports){
+},{"./lib/decoder":35,"./lib/encoder":36,"./lib/streams":37,"assert":3,"bl":8,"safe-buffer":50}],35:[function(require,module,exports){
 var bl = require('bl')
 var util = require('util')
 
@@ -3907,7 +4200,7 @@ module.exports = function buildDecode (decodingTypes) {
 
 module.exports.IncompleteBufferError = IncompleteBufferError
 
-},{"bl":5,"util":35}],16:[function(require,module,exports){
+},{"bl":8,"util":55}],36:[function(require,module,exports){
 'use strict'
 
 var Buffer = require('safe-buffer').Buffer
@@ -4194,7 +4487,7 @@ function encodeFloat (obj, forceFloat64) {
   return buf
 }
 
-},{"bl":5,"safe-buffer":30}],17:[function(require,module,exports){
+},{"bl":8,"safe-buffer":50}],37:[function(require,module,exports){
 'use strict'
 
 var Transform = require('readable-stream').Transform
@@ -4281,7 +4574,7 @@ Decoder.prototype._transform = function (buf, enc, done) {
 module.exports.decoder = Decoder
 module.exports.encoder = Encoder
 
-},{"bl":5,"inherits":11,"readable-stream":29}],18:[function(require,module,exports){
+},{"bl":8,"inherits":31,"readable-stream":49}],38:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -4328,7 +4621,7 @@ function nextTick(fn, arg1, arg2, arg3) {
 }
 
 }).call(this,require('_process'))
-},{"_process":19}],19:[function(require,module,exports){
+},{"_process":39}],39:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -4514,10 +4807,10 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],20:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 module.exports = require('./lib/_stream_duplex.js');
 
-},{"./lib/_stream_duplex.js":21}],21:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":41}],41:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4642,7 +4935,7 @@ function forEach(xs, f) {
     f(xs[i], i);
   }
 }
-},{"./_stream_readable":23,"./_stream_writable":25,"core-util-is":8,"inherits":11,"process-nextick-args":18}],22:[function(require,module,exports){
+},{"./_stream_readable":43,"./_stream_writable":45,"core-util-is":28,"inherits":31,"process-nextick-args":38}],42:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -4690,7 +4983,7 @@ function PassThrough(options) {
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
   cb(null, chunk);
 };
-},{"./_stream_transform":24,"core-util-is":8,"inherits":11}],23:[function(require,module,exports){
+},{"./_stream_transform":44,"core-util-is":28,"inherits":31}],43:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5700,7 +5993,7 @@ function indexOf(xs, x) {
   return -1;
 }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":21,"./internal/streams/BufferList":26,"./internal/streams/destroy":27,"./internal/streams/stream":28,"_process":19,"core-util-is":8,"events":9,"inherits":11,"isarray":13,"process-nextick-args":18,"safe-buffer":30,"string_decoder/":31,"util":6}],24:[function(require,module,exports){
+},{"./_stream_duplex":41,"./internal/streams/BufferList":46,"./internal/streams/destroy":47,"./internal/streams/stream":48,"_process":39,"core-util-is":28,"events":29,"inherits":31,"isarray":33,"process-nextick-args":38,"safe-buffer":50,"string_decoder/":51,"util":9}],44:[function(require,module,exports){
 // Copyright Joyent, Inc. and other Node contributors.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
@@ -5915,7 +6208,7 @@ function done(stream, er, data) {
 
   return stream.push(null);
 }
-},{"./_stream_duplex":21,"core-util-is":8,"inherits":11}],25:[function(require,module,exports){
+},{"./_stream_duplex":41,"core-util-is":28,"inherits":31}],45:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -6582,7 +6875,7 @@ Writable.prototype._destroy = function (err, cb) {
   cb(err);
 };
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./_stream_duplex":21,"./internal/streams/destroy":27,"./internal/streams/stream":28,"_process":19,"core-util-is":8,"inherits":11,"process-nextick-args":18,"safe-buffer":30,"util-deprecate":32}],26:[function(require,module,exports){
+},{"./_stream_duplex":41,"./internal/streams/destroy":47,"./internal/streams/stream":48,"_process":39,"core-util-is":28,"inherits":31,"process-nextick-args":38,"safe-buffer":50,"util-deprecate":52}],46:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -6657,7 +6950,7 @@ module.exports = function () {
 
   return BufferList;
 }();
-},{"safe-buffer":30}],27:[function(require,module,exports){
+},{"safe-buffer":50}],47:[function(require,module,exports){
 'use strict';
 
 /*<replacement>*/
@@ -6730,10 +7023,10 @@ module.exports = {
   destroy: destroy,
   undestroy: undestroy
 };
-},{"process-nextick-args":18}],28:[function(require,module,exports){
+},{"process-nextick-args":38}],48:[function(require,module,exports){
 module.exports = require('events').EventEmitter;
 
-},{"events":9}],29:[function(require,module,exports){
+},{"events":29}],49:[function(require,module,exports){
 exports = module.exports = require('./lib/_stream_readable.js');
 exports.Stream = exports;
 exports.Readable = exports;
@@ -6742,7 +7035,7 @@ exports.Duplex = require('./lib/_stream_duplex.js');
 exports.Transform = require('./lib/_stream_transform.js');
 exports.PassThrough = require('./lib/_stream_passthrough.js');
 
-},{"./lib/_stream_duplex.js":21,"./lib/_stream_passthrough.js":22,"./lib/_stream_readable.js":23,"./lib/_stream_transform.js":24,"./lib/_stream_writable.js":25}],30:[function(require,module,exports){
+},{"./lib/_stream_duplex.js":41,"./lib/_stream_passthrough.js":42,"./lib/_stream_readable.js":43,"./lib/_stream_transform.js":44,"./lib/_stream_writable.js":45}],50:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -6806,7 +7099,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":7}],31:[function(require,module,exports){
+},{"buffer":10}],51:[function(require,module,exports){
 'use strict';
 
 var Buffer = require('safe-buffer').Buffer;
@@ -7079,7 +7372,7 @@ function simpleWrite(buf) {
 function simpleEnd(buf) {
   return buf && buf.length ? this.write(buf) : '';
 }
-},{"safe-buffer":30}],32:[function(require,module,exports){
+},{"safe-buffer":50}],52:[function(require,module,exports){
 (function (global){
 
 /**
@@ -7150,16 +7443,16 @@ function config (name) {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],33:[function(require,module,exports){
-arguments[4][11][0].apply(exports,arguments)
-},{"dup":11}],34:[function(require,module,exports){
+},{}],53:[function(require,module,exports){
+arguments[4][31][0].apply(exports,arguments)
+},{"dup":31}],54:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],35:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -7749,5 +8042,5 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":34,"_process":19,"inherits":33}]},{},[2])(2)
+},{"./support/isBuffer":54,"_process":39,"inherits":53}]},{},[2])(2)
 });

@@ -4,11 +4,11 @@
     <meta charset="utf-8" />
     <script type="text/javascript">
         if (typeof Promise === 'undefined') {
-            document.write('<script type="text/javascript" src="scripts/signalr-clientES5-1.0.0-alpha1-final.js"><\/script>');
+            document.write('<script type="text/javascript" src="scripts/signalr-clientES5-1.0.0-alpha2-final.js"><\/script>');
         }
         else {
 
-            document.write('<script type="text/javascript" src="scripts/signalr-client-1.0.0-alpha1-final.js"><\/script>');
+            document.write('<script type="text/javascript" src="scripts/signalr-client-1.0.0-alpha2-final.js"><\/script>');
         }
     </script>
     <script src="https://code.jquery.com/jquery-3.2.1.js"
@@ -84,17 +84,16 @@
 
         var mouse_down = false;
         var connection = new signalR.HubConnection('/draw');
+        connection.on('draw', function (prev_x, prev_y, x, y, clr) {
+            console.log("X: " + x + " Y: " + y);
+            drawCanvas(prev_x, prev_y, x, y, clr);
+        });
         connection.start();
 
         clearMousePositions = function () {
             last_mousex = 0;
             last_mousey = 0;
         }
-
-        connection.on('draw', function (prev_x, prev_y, x, y, clr) {
-            console.log("X: " + x + " Y: " + y);
-            drawCanvas(prev_x, prev_y, x, y, clr);
-        });
 
     </script>
 </body>

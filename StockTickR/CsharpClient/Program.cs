@@ -61,7 +61,7 @@ namespace CsharpClient
 
             async Task StartStreaming()
             {
-                var channel = connection.Stream<Stock>("StreamStocks", CancellationToken.None);
+                var channel = await connection.StreamAsync<Stock>("StreamStocks", CancellationToken.None);
                 while (await channel.WaitToReadAsync() && !cts.IsCancellationRequested)
                 {
                     while (channel.TryRead(out var stock))
