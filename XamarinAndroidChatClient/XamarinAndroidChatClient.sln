@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamarinAndroidChatClient", "XamarinAndroidChatClient\XamarinAndroidChatClient.csproj", "{E20AF748-8EF6-4844-8ADD-68E738BA03D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E20AF748-8EF6-4844-8ADD-68E738BA03D4}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B34FB619-A2FA-4AD2-80FA-D66D998EB93B}
+	EndGlobalSection
+EndGlobal

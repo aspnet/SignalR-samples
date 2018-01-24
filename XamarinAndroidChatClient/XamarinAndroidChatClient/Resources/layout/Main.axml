@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true">
+    <Button
+        android:text="Connect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bConnect" />
+    <ListView
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_width="fill_parent"
+        android:id="@+id/lvMessages" />
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/etMessageText"
+        android:hint="Enter Message" />
+    <Button
+        android:text="Send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bSend" />
+</LinearLayout>
