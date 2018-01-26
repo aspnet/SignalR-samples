@@ -25,7 +25,7 @@ namespace XamarinAndroidChatClient
             var connected = false;
 
             var hubConnection = new HubConnectionBuilder()
-                    .WithUrl("https://signalrcore-chatsample.azurewebsites.net/chat")
+                    .WithUrl("<YOUR SERVER URL HERE>")
                     .Build();
 
             //Setting up window to enter name
