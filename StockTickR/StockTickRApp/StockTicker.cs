@@ -26,13 +26,13 @@ namespace SignalR.StockTicker
         private volatile bool _updatingStockPrices;
         private volatile MarketState _marketState;
 
-        public StockTicker(IHubContext<StockTickerHub> clients)
+        public StockTicker(IHubContext<StockTickerHub> hub)
         {
-            Clients = clients;
+            Hub = hub;
             LoadDefaultStocks();
         }
 
-        private IHubContext<StockTickerHub> Clients
+        private IHubContext<StockTickerHub> Hub
         {
             get;
             set;
@@ -190,10 +190,10 @@ namespace SignalR.StockTicker
             switch (marketState)
             {
                 case MarketState.Open:
-                    await Clients.Clients.All.InvokeAsync("marketOpened");
+                    await Hub.Clients.All.InvokeAsync("marketOpened");
                     break;
                 case MarketState.Closed:
-                    await Clients.Clients.All.InvokeAsync("marketClosed");
+                    await Hub.Clients.All.InvokeAsync("marketClosed");
                     break;
                 default:
                     break;
@@ -202,12 +202,12 @@ namespace SignalR.StockTicker
 
         private async Task BroadcastMarketReset()
         {
-            await Clients.Clients.All.InvokeAsync("marketReset");
+            await Hub.Clients.All.InvokeAsync("marketReset");
         }
 
         private async Task BroadcastStockPrice(Stock stock)
         {
-            await Clients.Clients.All.InvokeAsync("updateStockPrice", stock);
+            await Hub.Clients.All.InvokeAsync("updateStockPrice", stock);
         }
     }
 
