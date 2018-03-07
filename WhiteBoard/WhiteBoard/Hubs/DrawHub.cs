@@ -8,7 +8,7 @@ namespace WhiteBoard.Hubs
     {
         public Task Draw(int prevX, int prevY, int currentX, int currentY, string color)
         {
-            return Clients.AllExcept(new List<string> { Context.ConnectionId }).InvokeAsync("draw", prevX, prevY, currentX, currentY, color);
+            return Clients.Others.SendAsync("draw", prevX, prevY, currentX, currentY, color);
         }
     }
 }
