@@ -20,14 +20,7 @@
     </div>
     <!--Script references. -->
     <!--Reference the SignalR library. -->
-    <script>
-            if (typeof Promise === 'undefined') {
-                document.write('<script type="text/javascript" src="scripts/signalr-clientES5-1.0.0-alpha2-final.js"><\/script>');
-            }
-            else {
-                document.write('<script type="text/javascript" src="scripts/signalr-client-1.0.0-alpha2-final.js"><\/script>');
-            }
-    </script>
+    <script type="text/javascript" src="scripts/signalr.js"></script>
     <!--Add script to update the page and send messages.-->
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', function () {
