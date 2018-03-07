@@ -8,7 +8,7 @@ namespace SignalRChatSample
         public void Send(string name, string message)
         {
             // Call the broadcastMessage method to update clients.
-            Clients.All.InvokeAsync("broadcastMessage", name, message);
+            Clients.All.SendAsync("broadcastMessage", name, message);
         }
     }
 }
