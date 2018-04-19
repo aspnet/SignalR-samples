@@ -3,11 +3,12 @@
  * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
  */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('msgpack5')) :
-	typeof define === 'function' && define.amd ? define(['msgpack5'], factory) :
-	(global.signalR = global.signalR || {}, global.signalR.protocols = global.signalR.protocols || {}, global.signalR.protocols.msgpack = factory(global.msgpack5));
-}(this, (function (msgpack5) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('@aspnet/signalr'), require('msgpack5')) :
+	typeof define === 'function' && define.amd ? define(['@aspnet/signalr', 'msgpack5'], factory) :
+	(global.signalR = global.signalR || {}, global.signalR.protocols = global.signalR.protocols || {}, global.signalR.protocols.msgpack = factory(global.signalR,global.msgpack5));
+}(this, (function (signalr,msgpack5) { 'use strict';
 
+signalr = signalr && signalr.hasOwnProperty('default') ? signalr['default'] : signalr;
 msgpack5 = msgpack5 && msgpack5.hasOwnProperty('default') ? msgpack5['default'] : msgpack5;
 
 function unwrapExports (x) {
@@ -17,76 +18,6 @@ function unwrapExports (x) {
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
-
-var BinaryMessageFormat_1 = createCommonjsModule(function (module, exports) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var BinaryMessageFormat = /** @class */ (function () {
-    function BinaryMessageFormat() {
-    }
-    // The length prefix of binary messages is encoded as VarInt. Read the comment in
-    // the BinaryMessageParser.TryParseMessage for details.
-    BinaryMessageFormat.write = function (output) {
-        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
-        //  in which case .byteLength does will be undefined
-        var size = output.byteLength || output.length;
-        var lenBuffer = [];
-        do {
-            var sizePart = size & 0x7f;
-            size = size >> 7;
-            if (size > 0) {
-                sizePart |= 0x80;
-            }
-            lenBuffer.push(sizePart);
-        } while (size > 0);
-        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
-        //  in which case .byteLength does will be undefined
-        size = output.byteLength || output.length;
-        var buffer = new Uint8Array(lenBuffer.length + size);
-        buffer.set(lenBuffer, 0);
-        buffer.set(output, lenBuffer.length);
-        return buffer.buffer;
-    };
-    BinaryMessageFormat.parse = function (input) {
-        var result = [];
-        var uint8Array = new Uint8Array(input);
-        var maxLengthPrefixSize = 5;
-        var numBitsToShift = [0, 7, 14, 21, 28];
-        for (var offset = 0; offset < input.byteLength;) {
-            var numBytes = 0;
-            var size = 0;
-            var byteRead = void 0;
-            do {
-                byteRead = uint8Array[offset + numBytes];
-                size = size | ((byteRead & 0x7f) << (numBitsToShift[numBytes]));
-                numBytes++;
-            } while (numBytes < Math.min(maxLengthPrefixSize, input.byteLength - offset) && (byteRead & 0x80) != 0);
-            if ((byteRead & 0x80) !== 0 && numBytes < maxLengthPrefixSize) {
-                throw new Error("Cannot read message size.");
-            }
-            if (numBytes === maxLengthPrefixSize && byteRead > 7) {
-                throw new Error("Messages bigger than 2GB are not supported.");
-            }
-            if (uint8Array.byteLength >= (offset + numBytes + size)) {
-                // IE does not support .slice() so use subarray
-                result.push(uint8Array.slice
-                    ? uint8Array.slice(offset + numBytes, offset + numBytes + size)
-                    : uint8Array.subarray(offset + numBytes, offset + numBytes + size));
-            }
-            else {
-                throw new Error("Incomplete message.");
-            }
-            offset = offset + numBytes + size;
-        }
-        return result;
-    };
-    return BinaryMessageFormat;
-}());
-exports.BinaryMessageFormat = BinaryMessageFormat;
-
-});
-
-unwrapExports(BinaryMessageFormat_1);
-var BinaryMessageFormat_2 = BinaryMessageFormat_1.BinaryMessageFormat;
 
 var byteLength_1 = byteLength;
 var toByteArray_1 = toByteArray;
@@ -2014,106 +1945,204 @@ var buffer_2 = buffer.SlowBuffer;
 var buffer_3 = buffer.INSPECT_MAX_BYTES;
 var buffer_4 = buffer.kMaxLength;
 
+var BinaryMessageFormat_1 = createCommonjsModule(function (module, exports) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var BinaryMessageFormat = /** @class */ (function () {
+    function BinaryMessageFormat() {
+    }
+    // The length prefix of binary messages is encoded as VarInt. Read the comment in
+    // the BinaryMessageParser.TryParseMessage for details.
+    BinaryMessageFormat.write = function (output) {
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
+        var size = output.byteLength || output.length;
+        var lenBuffer = [];
+        do {
+            var sizePart = size & 0x7f;
+            size = size >> 7;
+            if (size > 0) {
+                sizePart |= 0x80;
+            }
+            lenBuffer.push(sizePart);
+        } while (size > 0);
+        // msgpack5 uses returns Buffer instead of Uint8Array on IE10 and some other browser
+        //  in which case .byteLength does will be undefined
+        size = output.byteLength || output.length;
+        var buffer = new Uint8Array(lenBuffer.length + size);
+        buffer.set(lenBuffer, 0);
+        buffer.set(output, lenBuffer.length);
+        return buffer.buffer;
+    };
+    BinaryMessageFormat.parse = function (input) {
+        var result = [];
+        var uint8Array = new Uint8Array(input);
+        var maxLengthPrefixSize = 5;
+        var numBitsToShift = [0, 7, 14, 21, 28];
+        for (var offset = 0; offset < input.byteLength;) {
+            var numBytes = 0;
+            var size = 0;
+            var byteRead = void 0;
+            do {
+                byteRead = uint8Array[offset + numBytes];
+                size = size | ((byteRead & 0x7f) << (numBitsToShift[numBytes]));
+                numBytes++;
+            } while (numBytes < Math.min(maxLengthPrefixSize, input.byteLength - offset) && (byteRead & 0x80) !== 0);
+            if ((byteRead & 0x80) !== 0 && numBytes < maxLengthPrefixSize) {
+                throw new Error("Cannot read message size.");
+            }
+            if (numBytes === maxLengthPrefixSize && byteRead > 7) {
+                throw new Error("Messages bigger than 2GB are not supported.");
+            }
+            if (uint8Array.byteLength >= (offset + numBytes + size)) {
+                // IE does not support .slice() so use subarray
+                result.push(uint8Array.slice
+                    ? uint8Array.slice(offset + numBytes, offset + numBytes + size)
+                    : uint8Array.subarray(offset + numBytes, offset + numBytes + size));
+            }
+            else {
+                throw new Error("Incomplete message.");
+            }
+            offset = offset + numBytes + size;
+        }
+        return result;
+    };
+    return BinaryMessageFormat;
+}());
+exports.BinaryMessageFormat = BinaryMessageFormat;
+
+});
+
+unwrapExports(BinaryMessageFormat_1);
+var BinaryMessageFormat_2 = BinaryMessageFormat_1.BinaryMessageFormat;
+
 var MessagePackHubProtocol_1 = createCommonjsModule(function (module, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
+
 
 
 
 var MessagePackHubProtocol = /** @class */ (function () {
     function MessagePackHubProtocol() {
         this.name = "messagepack";
-        this.type = 2 /* Binary */;
+        this.version = 1;
+        this.transferFormat = signalr.TransferFormat.Binary;
     }
-    MessagePackHubProtocol.prototype.parseMessages = function (input) {
+    MessagePackHubProtocol.prototype.parseMessages = function (input, logger) {
         var _this = this;
-        return BinaryMessageFormat_1.BinaryMessageFormat.parse(input).map(function (m) { return _this.parseMessage(m); });
+        if (logger === null) {
+            logger = new signalr.NullLogger();
+        }
+        return BinaryMessageFormat_1.BinaryMessageFormat.parse(input).map(function (m) { return _this.parseMessage(m, logger); });
     };
-    MessagePackHubProtocol.prototype.parseMessage = function (input) {
-        if (input.length == 0) {
+    MessagePackHubProtocol.prototype.parseMessage = function (input, logger) {
+        if (input.length === 0) {
             throw new Error("Invalid payload.");
         }
         var msgpack = msgpack5();
         var properties = msgpack.decode(new buffer.Buffer(input));
-        if (properties.length == 0 || !(properties instanceof Array)) {
+        if (properties.length === 0 || !(properties instanceof Array)) {
             throw new Error("Invalid payload.");
         }
         var messageType = properties[0];
         switch (messageType) {
             case 1 /* Invocation */:
-                return this.createInvocationMessage(properties);
+                return this.createInvocationMessage(this.readHeaders(properties), properties);
             case 2 /* StreamItem */:
-                return this.createStreamItemMessage(properties);
+                return this.createStreamItemMessage(this.readHeaders(properties), properties);
             case 3 /* Completion */:
-                return this.createCompletionMessage(properties);
+                return this.createCompletionMessage(this.readHeaders(properties), properties);
             case 6 /* Ping */:
                 return this.createPingMessage(properties);
+            case 7 /* Close */:
+                return this.createCloseMessage(properties);
             default:
-                throw new Error("Invalid message type.");
+                // Future protocol changes can add message types, old clients can ignore them
+                logger.log(signalr.LogLevel.Information, "Unknown message type '" + messageType + "' ignored.");
+                return null;
         }
     };
+    MessagePackHubProtocol.prototype.createCloseMessage = function (properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 2) {
+            throw new Error("Invalid payload for Close message.");
+        }
+        return {
+            // Close messages have no headers.
+            error: properties[1],
+            type: 7 /* Close */,
+        };
+    };
     MessagePackHubProtocol.prototype.createPingMessage = function (properties) {
-        if (properties.length != 1) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 1) {
             throw new Error("Invalid payload for Ping message.");
         }
         return {
-            type: properties[0]
+            // Ping messages have no headers.
+            type: 6 /* Ping */,
         };
     };
-    MessagePackHubProtocol.prototype.createInvocationMessage = function (properties) {
-        if (properties.length != 4) {
+    MessagePackHubProtocol.prototype.createInvocationMessage = function (headers, properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 5) {
             throw new Error("Invalid payload for Invocation message.");
         }
-        var invocationId = properties[1];
+        var invocationId = properties[2];
         if (invocationId) {
             return {
-                type: 1 /* Invocation */,
+                arguments: properties[4],
+                headers: headers,
                 invocationId: invocationId,
-                target: properties[2],
-                arguments: properties[3]
+                target: properties[3],
+                type: 1 /* Invocation */,
             };
         }
         else {
             return {
+                arguments: properties[4],
+                headers: headers,
+                target: properties[3],
                 type: 1 /* Invocation */,
-                target: properties[2],
-                arguments: properties[3]
             };
         }
     };
-    MessagePackHubProtocol.prototype.createStreamItemMessage = function (properties) {
-        if (properties.length != 3) {
-            throw new Error("Invalid payload for stream Result message.");
+    MessagePackHubProtocol.prototype.createStreamItemMessage = function (headers, properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 4) {
+            throw new Error("Invalid payload for StreamItem message.");
         }
         return {
+            headers: headers,
+            invocationId: properties[2],
+            item: properties[3],
             type: 2 /* StreamItem */,
-            invocationId: properties[1],
-            item: properties[2]
         };
     };
-    MessagePackHubProtocol.prototype.createCompletionMessage = function (properties) {
-        if (properties.length < 3) {
+    MessagePackHubProtocol.prototype.createCompletionMessage = function (headers, properties) {
+        // check minimum length to allow protocol to add items to the end of objects in future releases
+        if (properties.length < 4) {
             throw new Error("Invalid payload for Completion message.");
         }
         var errorResult = 1;
         var voidResult = 2;
         var nonVoidResult = 3;
-        var resultKind = properties[2];
-        if ((resultKind === voidResult && properties.length != 3) ||
-            (resultKind !== voidResult && properties.length != 4)) {
+        var resultKind = properties[3];
+        if (resultKind !== voidResult && properties.length < 5) {
             throw new Error("Invalid payload for Completion message.");
         }
         var completionMessage = {
-            type: 3 /* Completion */,
-            invocationId: properties[1],
             error: null,
-            result: null
+            headers: headers,
+            invocationId: properties[2],
+            result: null,
+            type: 3 /* Completion */,
         };
         switch (resultKind) {
             case errorResult:
-                completionMessage.error = properties[3];
+                completionMessage.error = properties[4];
                 break;
             case nonVoidResult:
-                completionMessage.result = properties[3];
+                completionMessage.result = properties[4];
                 break;
         }
         return completionMessage;
@@ -2133,15 +2162,22 @@ var MessagePackHubProtocol = /** @class */ (function () {
     };
     MessagePackHubProtocol.prototype.writeInvocation = function (invocationMessage) {
         var msgpack = msgpack5();
-        var payload = msgpack.encode([1 /* Invocation */, invocationMessage.invocationId || null,
+        var payload = msgpack.encode([1 /* Invocation */, invocationMessage.headers || {}, invocationMessage.invocationId || null,
             invocationMessage.target, invocationMessage.arguments]);
         return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
     };
     MessagePackHubProtocol.prototype.writeStreamInvocation = function (streamInvocationMessage) {
         var msgpack = msgpack5();
-        var payload = msgpack.encode([4 /* StreamInvocation */, streamInvocationMessage.invocationId,
+        var payload = msgpack.encode([4 /* StreamInvocation */, streamInvocationMessage.headers || {}, streamInvocationMessage.invocationId,
             streamInvocationMessage.target, streamInvocationMessage.arguments]);
         return BinaryMessageFormat_1.BinaryMessageFormat.write(payload.slice());
+    };
+    MessagePackHubProtocol.prototype.readHeaders = function (properties) {
+        var headers = properties[1];
+        if (typeof headers !== "object") {
+            throw new Error("Invalid headers.");
+        }
+        return headers;
     };
     return MessagePackHubProtocol;
 }());
