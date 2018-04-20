@@ -24,7 +24,7 @@ namespace MoveShape
 
             app.UseSignalR(router =>
             {
-                router.MapHub<ShapeHub>("shapeHub");
+                router.MapHub<ShapeHub>("/shapeHub");
             });
         }
     }
