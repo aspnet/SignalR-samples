@@ -33,7 +33,7 @@
             messageInput.focus();
 
             // Start the connection.
-            var connection = new signalR.HubConnection(url);
+            var connection = new signalR.HubConnection('/chat');
 
                 // Create a function that the hub can call to broadcast messages.
             connection.on('broadcastMessage', function (name, message) {
@@ -46,19 +46,20 @@
                 document.getElementById('discussion').appendChild(liElement);
             });
 
+            document.getElementById('sendmessage').addEventListener('click', function (event) {
+                // Call the Send method on the hub.
+                connection.invoke('send', name, messageInput.value);
+
+                // Clear text box and reset focus for next comment.
+                messageInput.value = '';
+                messageInput.focus();
+                event.preventDefault();
+            });
+
             // Transport fallback functionality is now built into start.
             connection.start()
                 .then(function (connection) {
                     console.log('connection started');
-                    document.getElementById('sendmessage').addEventListener('click', function (event) {
-                        // Call the Send method on the hub.
-                        connection.invoke('send', name, messageInput.value);
-
-                        // Clear text box and reset focus for next comment.
-                        messageInput.value = '';
-                        messageInput.focus();
-                        event.preventDefault();
-                    });
             })
             .catch(error => {
                 console.error(error.message);
