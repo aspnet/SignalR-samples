@@ -78,7 +78,7 @@ namespace WindowsFormsSample
         {
             try
             {
-                await _connection.InvokeAsync("Send", messageTextBox.Text);
+                await _connection.InvokeAsync("Send", "WindowsFormsClient", messageTextBox.Text);
             }
             catch (Exception ex)
             {
