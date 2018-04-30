@@ -32,7 +32,7 @@ namespace WindowsFormsSample
                 .WithUrl(addressTextBox.Text)
                 .Build();
 
-            _connection.On<string>("Send", OnSend);
+            _connection.On<string, string>("broadcastMessage", OnBroadcastMessage);
 
             Log(Color.Gray, "Starting connection...");
             try
@@ -96,9 +96,9 @@ namespace WindowsFormsSample
             sendButton.Enabled = connected;
         }
 
-        private void OnSend(string message)
+        private void OnBroadcastMessage(string user, string message)
         {
-            Log(Color.Black, message);
+            Log(Color.Black, $"{user}: {message}");
         }
 
         private void Log(Color color, string message)
