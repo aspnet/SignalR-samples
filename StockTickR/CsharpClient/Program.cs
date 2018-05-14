@@ -3,24 +3,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.Sockets;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace CsharpClient
 {
     public class Program
     {
-        static void Main(string[] args)
-        {
-            Task.Run(Run).Wait();
-        }
-
-        static async Task Run()
+        static async Task Main(string[] args)
         {
             var connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:5000/stocks")
-                .WithConsoleLogger()
-                .WithMessagePackProtocol()
-                .WithTransport(TransportType.WebSockets)
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddConsole();
+                })
+                .AddMessagePackProtocol()
                 .Build();
 
             await connection.StartAsync();
@@ -41,33 +39,28 @@ namespace CsharpClient
                 return Task.CompletedTask;
             };
 
-            connection.On("marketOpened", async () =>
+
+            connection.On("marketOpened", () =>
             {
-                await StartStreaming();
+                Console.WriteLine("Market opened");
             });
 
-            // Do an initial check to see if we can start streaming the stocks
-            var state = await connection.InvokeAsync<string>("GetMarketState");
-            if (string.Equals(state, "Open"))
+            connection.On("marketClosed", () =>
             {
-                await StartStreaming();
-            }
+                Console.WriteLine("Market closed");
+            });
 
-            // Keep client running until cancel requested.
-            while (!cts.IsCancellationRequested)
+            connection.On("marketReset", () =>
             {
-                await Task.Delay(250);
-            }
+                // We don't care if the market rest
+            });
 
-            async Task StartStreaming()
+            var channel = await connection.StreamAsChannelAsync<Stock>("StreamStocks", CancellationToken.None);
+            while (await channel.WaitToReadAsync() && !cts.IsCancellationRequested)
             {
-                var channel = await connection.StreamAsync<Stock>("StreamStocks", CancellationToken.None);
-                while (await channel.WaitToReadAsync() && !cts.IsCancellationRequested)
+                while (channel.TryRead(out var stock))
                 {
-                    while (channel.TryRead(out var stock))
-                    {
-                        Console.WriteLine($"{stock.Symbol} {stock.Price}");
-                    }
+                    Console.WriteLine($"{stock.Symbol} {stock.Price}");
                 }
             }
         }

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Channels;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 
-namespace SignalR.StockTicker
+namespace StockTickR.Hubs
 {
     public class StockTickerHub : Hub
     {
@@ -19,9 +20,9 @@ namespace SignalR.StockTicker
             return _stockTicker.GetAllStocks();
         }
 
-        public IObservable<Stock> StreamStocks()
+        public ChannelReader<Stock> StreamStocks()
         {
-            return _stockTicker.StreamStocks();
+            return _stockTicker.StreamStocks().AsChannelReader(10);
         }
 
         public string GetMarketState()

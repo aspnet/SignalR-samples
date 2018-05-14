@@ -1,9 +1,6 @@
 {
   "dependencies": {
-    "atob": "^2.0.3",
-    "btoa": "^1.1.2",
     "eventsource": "^1.0.5",
-    "msgpack5": "^3.5.1",
     "websocket": "^1.0.24",
     "xmlhttprequest": "^1.8.0"
   },
@@ -11,7 +8,7 @@
     "src/**/*"
   ],
   "devDependencies": {
-    "@aspnet/signalr-client": "^1.0.0-alpha2-final",
+    "@aspnet/signalr": "^1.0.0-rc1-final",
     "@types/node": "^8.0.32"
   }
 }

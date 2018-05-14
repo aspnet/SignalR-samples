@@ -1,16 +1,17 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using StockTickR.Hubs;
 
-namespace SignalR.StockTicker
+namespace StockTickR
 {
     public class Startup
     {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSignalR();
+            services.AddSignalR()
+                    .AddMessagePackProtocol();
 
-            services.AddScoped<StockTickerHub>();
             services.AddSingleton<StockTicker>();
         }
 
@@ -21,7 +22,7 @@ namespace SignalR.StockTicker
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<StockTickerHub>("stocks");
+                routes.MapHub<StockTickerHub>("/stocks");
             });
         }
     }

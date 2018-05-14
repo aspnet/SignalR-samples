@@ -12,14 +12,17 @@ if (!String.prototype.supplant) {
 
 var stockTable = document.getElementById('stockTable');
 var stockTableBody = stockTable.getElementsByTagName('tbody')[0];
-var rowTemplate = '<td>{symbol}</td><td>{price}</td><td>{DayOpen}</td><td>{DayHigh}</td><td>{dayLow}</td><td class="changeValue"><span class="dir {directionClass}">{direction}</span> {change}</td><td>{percentChange}</td>';
-var tickerTemplate = '<span class="symbol">{symbol}</span> <span class="price">{price}</span> <span class="changeValue"><span class="dir {directionClass}">{direction}</span> {Change} ({percentChange})</span>';
+var rowTemplate = '<td>{symbol}</td><td>{price}</td><td>{dayOpen}</td><td>{dayHigh}</td><td>{dayLow}</td><td class="changeValue"><span class="dir {directionClass}">{direction}</span> {change}</td><td>{percentChange}</td>';
+var tickerTemplate = '<span class="symbol">{symbol}</span> <span class="price">{price}</span> <span class="changeValue"><span class="dir {directionClass}">{direction}</span> {change} ({percentChange})</span>';
 var stockTicker = document.getElementById('stockTicker');
 var stockTickerBody = stockTicker.getElementsByTagName('ul')[0];
 var up = '▲';
 var down = '▼';
 
-let connection = new signalR.HubConnection("/stocks");
+let connection = new signalR.HubConnectionBuilder()
+    .withUrl("/stocks")
+    .build();
+
 connection.start().then(function () {
     connection.invoke("GetAllStocks").then(function (stocks) {
         for (let i = 0; i < stocks.length; i++) {

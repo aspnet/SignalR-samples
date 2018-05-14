@@ -2,12 +2,13 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Channels;
 using Microsoft.AspNetCore.SignalR;
+using StockTickR.Hubs;
 
-namespace SignalR.StockTicker
+namespace StockTickR
 {
     public class StockTicker
     {
@@ -15,6 +16,8 @@ namespace SignalR.StockTicker
         private readonly SemaphoreSlim _updateStockPricesLock = new SemaphoreSlim(1, 1);
 
         private readonly ConcurrentDictionary<string, Stock> _stocks = new ConcurrentDictionary<string, Stock>();
+
+        private readonly Subject<Stock> _subject = new Subject<Stock>();
 
         // Stock can go up or down by a percentage of this factor on each change
         private readonly double _rangePercent = 0.002;
@@ -51,18 +54,7 @@ namespace SignalR.StockTicker
 
         public IObservable<Stock> StreamStocks()
         {
-            return Observable.Create(
-                async (IObserver<Stock> observer) =>
-                {
-                    while (MarketState == MarketState.Open)
-                    {
-                        foreach (var stock in _stocks.Values)
-                        {
-                            observer.OnNext(stock);
-                        }
-                        await Task.Delay(_updateInterval);
-                    }
-                });
+            return _subject;
         }
 
         public async Task OpenMarket()
@@ -154,6 +146,8 @@ namespace SignalR.StockTicker
                     foreach (var stock in _stocks.Values)
                     {
                         TryUpdateStockPrice(stock);
+
+                        _subject.OnNext(stock);
                     }
 
                     _updatingStockPrices = false;
@@ -190,10 +184,10 @@ namespace SignalR.StockTicker
             switch (marketState)
             {
                 case MarketState.Open:
-                    await Hub.Clients.All.InvokeAsync("marketOpened");
+                    await Hub.Clients.All.SendAsync("marketOpened");
                     break;
                 case MarketState.Closed:
-                    await Hub.Clients.All.InvokeAsync("marketClosed");
+                    await Hub.Clients.All.SendAsync("marketClosed");
                     break;
                 default:
                     break;
@@ -202,12 +196,7 @@ namespace SignalR.StockTicker
 
         private async Task BroadcastMarketReset()
         {
-            await Hub.Clients.All.InvokeAsync("marketReset");
-        }
-
-        private async Task BroadcastStockPrice(Stock stock)
-        {
-            await Hub.Clients.All.InvokeAsync("updateStockPrice", stock);
+            await Hub.Clients.All.SendAsync("marketReset");
         }
     }
 

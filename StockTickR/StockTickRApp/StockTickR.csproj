@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
  <PropertyGroup>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
- <ItemGroup>
-   <None Include="wwwroot\index.html" />
- </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Protocols.MessagePack" Version="1.0.0-rc1-final" />
     <PackageReference Include="System.Reactive.Linq" Version="3.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha2-final" />
   </ItemGroup>
 </Project>

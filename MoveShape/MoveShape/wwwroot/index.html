@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <script type="text/javascript" src="lib/signalr.js"></script>
+    <script type="text/javascript" src="lib/signalr.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.js"
             integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
             crossorigin="anonymous"></script>
@@ -23,7 +23,9 @@
     <div id="shape"></div>
     <script>
         $shape = $("#shape");
-        var connection = new signalR.HubConnection('/shapeHub');
+        var connection = new signalR.HubConnectionBuilder()
+                                    .withUrl('/shapeHub')
+                                    .build();
 
         connection.on('shapeMoved', function(x, y) {
             $shape.css({ left: x, top: y });
