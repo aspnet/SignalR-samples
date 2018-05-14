@@ -21,6 +21,7 @@ namespace ChatSample
             {
                 app.UseDeveloperExceptionPage();
             }
+
             app.UseFileServer();
 
             app.UseSignalR(routes =>

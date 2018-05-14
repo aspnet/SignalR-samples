@@ -19,7 +19,6 @@ namespace MoveShape
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseStaticFiles();
             app.UseFileServer();
 
             app.UseSignalR(router =>

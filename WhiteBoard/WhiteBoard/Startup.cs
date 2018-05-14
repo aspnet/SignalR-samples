@@ -28,6 +28,7 @@ namespace WhiteBoard
             }
 
             app.UseFileServer();
+
             app.UseSignalR(routes =>
             {
                 routes.MapHub<DrawHub>("/draw");
