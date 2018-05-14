@@ -103,7 +103,12 @@ namespace WindowsFormsSample
 
         private void Log(Color color, string message)
         {
-            messagesList.Items.Add(new LogMessage(color, message));
+            Action callback = () =>
+            {
+                messagesList.Items.Add(new LogMessage(color, message));
+            };
+
+            Invoke(callback);
         }
 
         private class LogMessage
