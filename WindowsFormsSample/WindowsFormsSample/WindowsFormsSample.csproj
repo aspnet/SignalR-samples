@@ -83,7 +83,6 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client">
       <Version>1.0.0-rc1-final</Version>
     </PackageReference>
-    <!-- Workaround for https://github.com/dotnet/corefx/issues/29149 -->
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
