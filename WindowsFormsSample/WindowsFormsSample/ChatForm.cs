@@ -32,7 +32,7 @@ namespace WindowsFormsSample
                 .WithUrl(addressTextBox.Text)
                 .Build();
 
-            _connection.On<string>("Send", OnSend);
+            _connection.On<string, string>("broadcastMessage", OnSend);
 
             Log(Color.Gray, "Starting connection...");
             try
@@ -78,7 +78,7 @@ namespace WindowsFormsSample
         {
             try
             {
-                await _connection.InvokeAsync("Send", messageTextBox.Text);
+                await _connection.InvokeAsync("Send", "WinFormsApp", messageTextBox.Text);
             }
             catch (Exception ex)
             {
@@ -96,9 +96,9 @@ namespace WindowsFormsSample
             sendButton.Enabled = connected;
         }
 
-        private void OnSend(string message)
+        private void OnSend(string name, string message)
         {
-            Log(Color.Black, message);
+            Log(Color.Black, name + ": " + message);
         }
 
         private void Log(Color color, string message)
