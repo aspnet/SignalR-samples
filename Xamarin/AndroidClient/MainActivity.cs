@@ -1,11 +1,11 @@
-﻿using Android.App;
+using Android.App;
 using Android.Widget;
 using Android.OS;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace XamarinAndroidChatClient
+namespace AndroidApp
 {
     [Activity(Label = "Xamarin Android Chat Client", MainLauncher = true)]
     public class MainActivity : Activity
@@ -15,7 +15,7 @@ namespace XamarinAndroidChatClient
             base.OnCreate(savedInstanceState);
 
             // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+            SetContentView(Resource.Layout.activity_main);
 
             //Setting up references to views
             var connectButton = FindViewById<Button>(Resource.Id.bConnect);
