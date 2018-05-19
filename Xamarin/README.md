@@ -1,4 +1,4 @@
-## Xamarin Android Chat Client
+## Xamarin Clients
 The server application is located in the `ChatSample` folder.
 
 Be sure to enter your own server url in the hub connection builder.
