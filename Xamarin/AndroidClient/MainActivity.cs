@@ -1,9 +1,14 @@
+extern alias slowspan;
+
 using Android.App;
 using Android.Widget;
 using Android.OS;
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.SignalR.Protocol;
 
@@ -96,6 +101,35 @@ namespace AndroidApp
         public void MakeProtocol()
         {
             var proto = new JsonHubProtocol();
+        }
+
+        private class MyHubProtocol : IHubProtocol
+        {
+            public string Name => throw new NotImplementedException();
+
+            public int Version => throw new NotImplementedException();
+
+            public TransferFormat TransferFormat => throw new NotImplementedException();
+
+            public slowspan::System.ReadOnlyMemory<byte> GetMessageBytes(HubMessage message)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool IsVersionSupported(int version)
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool TryParseMessage(ref slowspan::System.Buffers.ReadOnlySequence<byte> input, IInvocationBinder binder, out HubMessage message)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void WriteMessage(HubMessage message, slowspan::System.Buffers.IBufferWriter<byte> output)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }
