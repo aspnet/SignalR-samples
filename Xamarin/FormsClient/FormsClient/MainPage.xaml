@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:FormsClient"
+             x:Class="FormsClient.MainPage">
+
+    <StackLayout Margin="8">
+        <!-- Place new controls here -->
+        <Entry x:Name="ServerUrlEntry" Placeholder="Server URL" />
+        <Button x:Name="ConnectDisconnectButton" Text="Connect" Clicked="ConnectDisconnectButton_Clicked" />
+        <ListView x:Name="MessagesListView" VerticalOptions="FillAndExpand" />
+        <StackLayout Orientation="Horizontal">
+            <Entry x:Name="MessageEntry" Placeholder="Message" HorizontalOptions="FillAndExpand" />
+            <Button x:Name="SendButton" Text="Send" Clicked="SendButton_Clicked" />
+        </StackLayout>
+    </StackLayout>
+
+</ContentPage>
