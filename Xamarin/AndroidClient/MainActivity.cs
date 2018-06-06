@@ -20,117 +20,46 @@ namespace AndroidApp
         protected override void OnCreate(Bundle savedInstanceState)
         {
             MakeProtocol();
-
-            //base.OnCreate(savedInstanceState);
-
-            //// Set our view from the "main" layout resource
-            //SetContentView(Resource.Layout.activity_main);
-
-            ////Setting up references to views
-            //var connectButton = FindViewById<Button>(Resource.Id.bConnect);
-            //var listView = FindViewById<ListView>(Resource.Id.lvMessages);
-            //var sendButton = FindViewById<Button>(Resource.Id.bSend);
-            //var messageText = FindViewById<EditText>(Resource.Id.etMessageText);
-            //var connected = false;
-
-            //var hubConnection = new HubConnectionBuilder()
-            //        .WithUrl("http://localhost:5000/")
-            //        .Build();
-
-            ////Setting up window to enter name
-            //AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            //alertDialogBuilder.SetTitle("Enter Your Name");
-
-            //var userName = "";
-            //var nameInput = new EditText(this);
-            //nameInput.InputType = Android.Text.InputTypes.TextVariationPersonName;
-            //alertDialogBuilder.SetView(nameInput);
-
-            //alertDialogBuilder.SetPositiveButton("Ok", (_, __) =>
-            //{
-            //    userName = nameInput.Text;
-            //});
-
-            //alertDialogBuilder.SetNegativeButton("Cancel", (_, __) => { });
-
-            //alertDialogBuilder.Show();
-
-            //var messages = new List<string>();
-            //var arrayAdapter = new ArrayAdapter(this, Android.Resource.Layout.SimpleListItem1, messages);
-            //listView.Adapter = arrayAdapter;
-
-            //connectButton.Click += async (sender, e) =>
-            //{
-            //    await hubConnection.StartAsync();
-            //    connectButton.Enabled = false;
-            //    connected = true;
-            //    Toast.MakeText(this, "Connected", ToastLength.Short).Show();
-            //    await hubConnection.InvokeAsync("Send", userName, "is now connected");
-            //};
-
-            //hubConnection.On<string, string>("broadcastMessage", (name, message) =>
-            //{
-            //    var newMessage = $"{name}: {message}";
-            //    RunOnUiThread(() => {
-            //        arrayAdapter.Add(newMessage);
-            //        arrayAdapter.NotifyDataSetChanged();
-            //    });
-            //});
-
-            //sendButton.Click += async (sender, e) =>
-            //{
-            //    if (!connected)
-            //    {
-            //        Toast.MakeText(this, "Must be Connected to Send!", ToastLength.Short).Show();
-            //        return;
-            //    }
-
-            //    try
-            //    {
-            //        await hubConnection.InvokeAsync("Send", userName, messageText.Text);
-            //        messageText.Text = "";
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        var exception = ex;
-            //    }
-            //};
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         public void MakeProtocol()
         {
+            // TypeLoadException at runtime
             var proto = new JsonHubProtocol();
+
+            // Can't even compile this...
+            //var proto = new MyHubProtocol();
         }
 
-        private class MyHubProtocol : IHubProtocol
-        {
-            public string Name => throw new NotImplementedException();
+        //private class MyHubProtocol : IHubProtocol
+        //{
+        //    public string Name => throw new NotImplementedException();
 
-            public int Version => throw new NotImplementedException();
+        //    public int Version => throw new NotImplementedException();
 
-            public TransferFormat TransferFormat => throw new NotImplementedException();
+        //    public TransferFormat TransferFormat => throw new NotImplementedException();
 
-            public slowspan::System.ReadOnlyMemory<byte> GetMessageBytes(HubMessage message)
-            {
-                throw new NotImplementedException();
-            }
+        //    public slowspan::System.ReadOnlyMemory<byte> GetMessageBytes(HubMessage message)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            public bool IsVersionSupported(int version)
-            {
-                throw new NotImplementedException();
-            }
+        //    public bool IsVersionSupported(int version)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            public bool TryParseMessage(ref slowspan::System.Buffers.ReadOnlySequence<byte> input, IInvocationBinder binder, out HubMessage message)
-            {
-                throw new NotImplementedException();
-            }
+        //    public bool TryParseMessage(ref slowspan::System.Buffers.ReadOnlySequence<byte> input, IInvocationBinder binder, out HubMessage message)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
 
-            public void WriteMessage(HubMessage message, slowspan::System.Buffers.IBufferWriter<byte> output)
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    public void WriteMessage(HubMessage message, slowspan::System.Buffers.IBufferWriter<byte> output)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }
 
