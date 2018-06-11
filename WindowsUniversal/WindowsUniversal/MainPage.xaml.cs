@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -37,6 +38,11 @@ namespace WindowsUniversal
             {
                 _connection = new HubConnectionBuilder()
                     .WithUrl(UrlTextBox.Text)
+                    .ConfigureLogging(logging =>
+                    {
+                        logging.AddDebug();
+                        logging.SetMinimumLevel(LogLevel.Trace);
+                    })
                     .Build();
 
                 var syncContext = SynchronizationContext.Current;
