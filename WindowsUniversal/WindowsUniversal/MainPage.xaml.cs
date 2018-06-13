@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Navigation;
 using Microsoft.AspNetCore.SignalR.Client;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -45,10 +46,10 @@ namespace WindowsUniversal
                     })
                     .Build();
 
-                var syncContext = SynchronizationContext.Current;
                 _connection.On<string>("Send", s =>
                 {
-                    syncContext.Post((state) => AppendMessage((string)state), s);
+                    // We don't need to actually wait for this, we're done after kicking this off.
+                    _ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => AppendMessage(s));
                 });
 
                 await _connection.StartAsync();
@@ -70,12 +71,12 @@ namespace WindowsUniversal
 
         private void ClearMessages()
         {
-            MessagesListView.Items.Clear();
+            MessagesListView.Items?.Clear();
         }
 
         private void AppendMessage(string message)
         {
-            MessagesListView.Items.Add(message);
+            MessagesListView.Items?.Add(message);
         }
 
         private async void SendButton_Click(object sender, RoutedEventArgs e)
