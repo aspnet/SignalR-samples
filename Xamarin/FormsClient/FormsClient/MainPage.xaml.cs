@@ -77,7 +77,7 @@ namespace FormsClient
 
             try
             {
-                await _connection.InvokeAsync("Send", MessageEntry.Text);
+                await _connection.SendAsync("Send", MessageEntry.Text);
                 MessageEntry.Text = "";
             }
             catch (Exception ex)

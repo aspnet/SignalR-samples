@@ -39,24 +39,6 @@ namespace AndroidApp
 
             _messages = new ArrayAdapter(this, Android.Resource.Layout.SimpleListItem1, new List<string>());
             _listView.Adapter = _messages;
-
-            ////Setting up window to enter name
-            //AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            //alertDialogBuilder.SetTitle("Enter Your Name");
-
-            //var userName = "";
-            //var nameInput = new EditText(this);
-            //nameInput.InputType = Android.Text.InputTypes.TextVariationPersonName;
-            //alertDialogBuilder.SetView(nameInput);
-
-            //alertDialogBuilder.SetPositiveButton("Ok", (_, __) =>
-            //{
-            //    userName = nameInput.Text;
-            //});
-
-            //alertDialogBuilder.SetNegativeButton("Cancel", (_, __) => { });
-
-            //alertDialogBuilder.Show();
         }
 
         private async void ConnectButton_Click(object sender, EventArgs e)
@@ -116,7 +98,7 @@ namespace AndroidApp
 
             try
             {
-                await _connection.InvokeAsync("Send", _messageText.Text);
+                await _connection.SendAsync("Send", _messageText.Text);
                 _messageText.Text = "";
             }
             catch (Exception ex)
