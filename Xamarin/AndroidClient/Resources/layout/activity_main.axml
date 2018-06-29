@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/etServerUrl"
+        android:hint="Server URL" />
     <Button
         android:text="Connect"
         android:layout_width="match_parent"
