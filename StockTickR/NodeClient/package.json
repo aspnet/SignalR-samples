@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "eventsource": "^1.0.5",
+    "tslib": "^1.9.3",
     "websocket": "^1.0.24",
     "xmlhttprequest": "^1.8.0"
   },
