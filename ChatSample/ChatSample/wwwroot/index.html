@@ -36,7 +36,7 @@
                                 .withUrl('/chat')
                                 .build();
 
-                // Create a function that the hub can call to broadcast messages.
+            // Create a function that the hub can call to broadcast messages.
             connection.on('broadcastMessage', function (name, message) {
                 // Html encode display name and message.
                 var encodedName = name;
