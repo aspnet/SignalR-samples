@@ -125,9 +125,9 @@ namespace StockTickR
 
             var stocks = new List<Stock>
             {
-                new Stock { Symbol = "MSFT", Price = 75.12m },
-                new Stock { Symbol = "AAPL", Price = 158.44m },
-                new Stock { Symbol = "GOOG", Price = 924.54m }
+                new Stock { Symbol = "MSFT", Price = 107.56m },
+                new Stock { Symbol = "AAPL", Price = 215.49m },
+                new Stock { Symbol = "GOOG", Price = 1221.16m }
             };
 
             stocks.ForEach(stock => _stocks.TryAdd(stock.Symbol, stock));
