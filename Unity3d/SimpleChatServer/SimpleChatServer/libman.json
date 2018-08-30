@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "twitter-bootstrap@3.3.7",
+      "files": [
+        "css/bootstrap.css",
+        "css/bootstrap.min.css",
+        "css/bootstrap.css.map",
+        "css/bootstrap.min.css.map",
+        "js/bootstrap.js",
+        "js/bootstrap.min.js",
+        "fonts/glyphicons-halflings-regular.woff2",
+        "fonts/glyphicons-halflings-regular.woff",
+        "fonts/glyphicons-halflings-regular.ttf"
+      ],
+      "destination": "wwwroot/lib/bootstrap/"
+    },
+    {
+      "library": "jquery@3.3.1",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.js","jquery.min.js"
+      ]
+    }
+  ]
+}

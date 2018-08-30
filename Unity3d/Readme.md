@@ -1,4 +1,4 @@
-SignalR Sample for Windows Mixed Reality
+ASP.Net Core SignalR Sample for Unity 3d
 ========================================
 
 Using SignalR over the native uNet integration makes for a more seamless
@@ -109,3 +109,8 @@ need to use an earlier version of Unity, you will need to use the .Net Framework
 version of ASP.Net SignalR, for which there are .Net 4.6 compatible libraries.
 The process of importing and using the dll’s are the same as demonstrated in
 this sample. Additionally, you can use the .Net backend for UWP apps.
+
+Error deploying UWP player in Visual Studio - Splashscreen
+----------------------------------------------------------
+
+You may encounter an error deploying a UWP player from Visual Studio, stating that there is an issue with finding splashscreen.png. To fix this, open the assets folder in the player output directory. Delete all the splashscreen.scale-xxx.png files except the splashscreen.scale-200.png file. Rename this file to splashscreen.png. Now remove the deleted files from your solution in Visual Studio and add the splashscreen.png file. Deployment should now work fine.

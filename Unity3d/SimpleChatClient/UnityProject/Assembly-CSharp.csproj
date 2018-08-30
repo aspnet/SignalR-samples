@@ -65,16 +65,16 @@
     <Compile Include="Assets\Unity3DDebugLogProvider.cs" />
     <None Include="Assets\link.xml" />
     <Reference Include="UnityEditor.StandardEvents">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PackageManagerUI.Editor">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.PackageManagerUI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.3f1/Editor/Data/PlaybackEngines/MetroSupport/Tools/UnityEngine.AIModule.dll</HintPath>
@@ -269,79 +269,79 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2018.2.3f1/Editor/Data/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Connections.Abstractions">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Connections.Abstractions.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Connections.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Connections.Client">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Connections.Client.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Connections.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Connections.Common">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Connections.Common.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Connections.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.Http.Features">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Features.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.Http.Features.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.SignalR.Client.Core">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Client.Core.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Client.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.SignalR.Client">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Client.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Client.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.SignalR.Common">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Common.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNetCore.SignalR.Protocols.Json">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Protocols.Json.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.AspNetCore.SignalR.Protocols.Json.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration.Abstractions">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration.Binder">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.Binder.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Configuration">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Configuration.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.DependencyInjection">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.DependencyInjection.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Logging">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Logging.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Options">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Options.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Options.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Primitives">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Primitives.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Newtonsoft.Json.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Buffers.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Pipelines">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.IO.Pipelines.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.IO.Pipelines.dll</HintPath>
     </Reference>
     <Reference Include="System.Memory">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Memory.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics.Vectors">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Numerics.Vectors.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Numerics.Vectors.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Channels">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Threading.Channels.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Threading.Channels.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>C:/Dev/SignalR/samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Threading.Tasks.Extensions.dll</HintPath>
+      <HintPath>C:/Dev/SignalR-samples/Unity3d/SimpleChatClient/UnityProject/Assets/Plugins/SignalR/System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.Analytics">
       <HintPath>C:/Users/hannesne/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.analytics@2.0.16/UnityEngine.Analytics.dll</HintPath>
