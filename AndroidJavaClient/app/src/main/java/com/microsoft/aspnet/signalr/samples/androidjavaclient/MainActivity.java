@@ -1,6 +1,7 @@
 package com.microsoft.aspnet.signalr.samples.androidjavaclient;
 
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.microsoft.aspnet.signalr.Action;
-import com.microsoft.aspnet.signalr.HubConnection;
-import com.microsoft.aspnet.signalr.HubConnectionBuilder;
-import com.microsoft.aspnet.signalr.LogLevel;
+import com.microsoft.signalr.HubConnection;
+import com.microsoft.signalr.HubConnectionBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        HubConnection hubConnection = new HubConnection("Your URL Here");
+        HubConnection hubConnection = HubConnectionBuilder.create("YOUR URL HERE").build();
         TextView textView = (TextView)findViewById(R.id.tvMain);
         ListView listView = (ListView)findViewById(R.id.lvMessages);
         Button sendButton = (Button)findViewById(R.id.bSend);
@@ -58,11 +57,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        try {
-            hubConnection.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            textView.setText("There was an error: " + e.getMessage());
+        new HubConnectionTask().execute(hubConnection);
+    }
+
+    class HubConnectionTask extends AsyncTask<HubConnection, Void, Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(HubConnection... hubConnections) {
+            HubConnection hubConnection = hubConnections[0];
+            hubConnection.start().blockingAwait();
+            return null;
         }
     }
 }

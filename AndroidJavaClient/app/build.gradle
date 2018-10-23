@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.microsoft.aspnet.signalr.samples.androidjavaclient"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -29,5 +29,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.microsoft.aspnet:signalr:0.1.0-preview1-35029'
+    implementation group: 'com.microsoft.signalr', name: 'signalr', version: '1.0.0-preview3-35501'
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.7'
 }
