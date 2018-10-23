@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, messageList);
         listView.setAdapter(arrayAdapter);
 
-
         hubConnection.on("Send", (message)-> {
             runOnUiThread(new Runnable() {
                 @Override
@@ -59,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         new HubConnectionTask().execute(hubConnection);
-
     }
 
     class HubConnectionTask extends AsyncTask<HubConnection, Void, Void>{
@@ -67,17 +65,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
         }
 
         @Override
         protected Void doInBackground(HubConnection... hubConnections) {
             HubConnection hubConnection = hubConnections[0];
-            try {
-                hubConnection.start().blockingAwait();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            hubConnection.start().blockingAwait();
             return null;
         }
     }
