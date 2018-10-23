@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        HubConnection hubConnection = HubConnectionBuilder.create("http://signalr-samples.azurewebsites.net/default").build();
+        HubConnection hubConnection = HubConnectionBuilder.create("YOUR URL HERE").build();
         TextView textView = (TextView)findViewById(R.id.tvMain);
         ListView listView = (ListView)findViewById(R.id.lvMessages);
         Button sendButton = (Button)findViewById(R.id.bSend);
