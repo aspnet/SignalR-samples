@@ -1,0 +1,75 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "clean",
+      "command": "dotnet clean",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/function"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "build",
+      "command": "dotnet build",
+      "type": "shell",
+      "dependsOn": "clean",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/function"
+      },
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "clean release",
+      "command": "dotnet clean --configuration Release",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/function"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "publish",
+      "identifier": "publish",
+      "command": "dotnet publish --configuration Release",
+      "type": "shell",
+      "dependsOn": "clean release",
+      "presentation": {
+        "reveal": "always"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/function"
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Run Functions Host",
+      "identifier": "runFunctionsHost",
+      "type": "shell",
+      "dependsOn": "build",
+      "options": {
+        "cwd": "${workspaceFolder}/function/bin/Debug/netstandard2.0"
+      },
+      "command": "func host start",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": "$func-watch"
+    }
+  ]
+}
