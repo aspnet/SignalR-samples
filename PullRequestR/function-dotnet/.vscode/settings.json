@@ -2,6 +2,6 @@
   "azureFunctions.projectRuntime": "~2",
   "azureFunctions.projectLanguage": "C#",
   "azureFunctions.templateFilter": "Verified",
-  "azureFunctions.deploySubpath": "function/bin/Release/netstandard2.0/publish",
+  "azureFunctions.deploySubpath": "bin/Release/netstandard2.0/publish",
   "azureFunctions.preDeployTask": "publish"
 }

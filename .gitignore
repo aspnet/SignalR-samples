@@ -44,6 +44,7 @@ dist/
 global.json
 BenchmarkDotNet.Artifacts/
 korebuild-lock.txt
+PullRequestR/android/.gradle/
 !PullRequestR/function-dotnet/.vscode
 !PullRequestR/function-javascript/.vscode
 !PullRequestR/function-javascript/local.settings.json

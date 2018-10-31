@@ -2,14 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "type": "shell",
+      "label": "echo",
+      "command": "echo ${workspaceFolder}",
+    },
+    {
       "label": "clean",
+      "dependsOn": "echo",
       "command": "dotnet clean",
       "type": "shell",
       "presentation": {
         "reveal": "always"
       },
       "options": {
-        "cwd": "${workspaceFolder}/function"
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
     },
@@ -23,7 +29,7 @@
         "isDefault": true
       },
       "options": {
-        "cwd": "${workspaceFolder}/function"
+        "cwd": "${workspaceFolder}"
       },
       "presentation": {
         "reveal": "always"
@@ -38,7 +44,7 @@
         "reveal": "always"
       },
       "options": {
-        "cwd": "${workspaceFolder}/function"
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
     },
@@ -52,7 +58,7 @@
         "reveal": "always"
       },
       "options": {
-        "cwd": "${workspaceFolder}/function"
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": "$msCompile"
     },
@@ -62,7 +68,7 @@
       "type": "shell",
       "dependsOn": "build",
       "options": {
-        "cwd": "${workspaceFolder}/function/bin/Debug/netstandard2.0"
+        "cwd": "${workspaceFolder}/bin/Debug/netstandard2.0"
       },
       "command": "func host start",
       "isBackground": true,
