@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String url = "https://githubreceiverjavascript.azurewebsites.net/api";
+        String url = "https://YOUR-FUNCTION-URI.azurewebsites.net/api";
         PullRequestAdapter adapter = new PullRequestAdapter(this, pullRequests);
         ListView lvItems = (ListView)findViewById(R.id.lvPullRequestList);
 
