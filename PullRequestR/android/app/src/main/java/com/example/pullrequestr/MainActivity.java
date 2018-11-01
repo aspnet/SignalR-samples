@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // This URL does NOT need to be suffixed with the "negotiate" endpoint, 
+        // the /api endpoint is correct. 
         String url = "https://YOUR-FUNCTION-URI.azurewebsites.net/api";
         PullRequestAdapter adapter = new PullRequestAdapter(this, pullRequests);
         ListView lvItems = (ListView)findViewById(R.id.lvPullRequestList);

@@ -13,6 +13,9 @@ using Microsoft.Azure.WebJobs.Extensions.SignalRService;
 
 namespace Company.Function
 {
+    // The class AND the value of the FunctionName parameter must
+    // both be set to "negotiate" as the SignalR client expects
+    // to call this specific endpoint. 
     public static class negotiate
     {
         [FunctionName("negotiate")]
