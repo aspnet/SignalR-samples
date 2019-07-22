@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "function-dotnet"
+		},
+		{
+			"path": "function-javascript"
+		}
+	],
+	"settings": {}
+}

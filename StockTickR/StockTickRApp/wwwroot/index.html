@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>ASP.NET Core SignalR Stock Ticker</title>
+    <link href="StockTicker.css" rel="stylesheet" />
+</head>
+<body>
+    <h1>ASP.NET Core SignalR Stock Ticker Sample</h1>
+
+    <input type="button" id="open" value="Open Market" />
+    <input type="button" id="close" value="Close Market" disabled="disabled" />
+    <input type="button" id="reset" value="Reset" />
+
+    <h2>Live Stock Table</h2>
+    <div id="stockTable">
+        <table border="1">
+            <thead>
+                <tr><th>Symbol</th><th>Price</th><th>Open</th><th>High</th><th>Low</th><th>Change</th><th>%</th></tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>Live Stock Ticker</h2>
+    <div id="stockTicker">
+        <div class="inner">
+            <ul position="absolute">
+            </ul>
+        </div>
+    </div>
+
+    <script src="lib/signalr.min.js"></script>
+    <script src="lib/stockTicker.js"></script>
+</body>
+</html>

@@ -1,0 +1,48 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run Functions Host",
+      "identifier": "runFunctionsHost",
+      "type": "shell",
+      "command": "func host start",
+      "isBackground": true,
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": [
+        {
+          "owner": "azureFunctions",
+          "pattern": [
+            {
+              "regexp": "\\b\\B",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "^.*Stopping host.*",
+            "endsPattern": "^.*Job host started.*"
+          }
+        }
+      ],
+      "options": {
+        "env": {
+          "languageWorkers:node:arguments": "--inspect=5858"
+        }
+      },
+      "dependsOn": "installExtensions"
+    },
+    {
+      "label": "installExtensions",
+      "identifier": "installExtensions",
+      "command": "func extensions install",
+      "type": "shell",
+      "presentation": {
+        "reveal": "always"
+      }
+    }
+  ]
+}

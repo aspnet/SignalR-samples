@@ -1,0 +1,43 @@
+<html>
+    <body>
+        <ul id="pushes"></ul>
+
+
+        <script src="https://unpkg.com/@aspnet/signalr@1.0.4/dist/browser/signalr.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script>
+            var urlBase = "https://YOUR-FUNCTION-URI.azurewebsites.net/api/";
+            const axiosConfig = {}
+
+            axios.post(urlBase + 'negotiate', null, axiosConfig)
+                .then(function(resp) { 
+
+                    const options = {
+                        accessTokenFactory: function() {
+                            return resp.data.accessToken
+                        }
+                    }
+
+                    const connection = new signalR.HubConnectionBuilder()
+                        .withUrl(resp.data.url, options)
+                        .build()
+
+                    connection.on('pushReceived', (msg) => {
+                        var item = document.createElement("li")
+                        var text = document.createTextNode(msg)
+                        item.appendChild(text)
+                        document.getElementById('pushes').appendChild(item)
+                    })
+
+                    connection.on('pullRequestOpened', (args) => {
+                        console.log('pull request opened')
+                    })
+
+                    connection.start()
+                })
+                .catch(function() { 
+                    return {} 
+                })
+        </script>
+    </body>
+</html>
