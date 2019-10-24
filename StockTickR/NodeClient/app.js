@@ -1,10 +1,7 @@
-const signalR = require("@aspnet/signalr");
-
-XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-WebSocket = require("websocket").w3cwebsocket;
+const signalR = require("@microsoft/signalr");
 
 var hubConnection = new signalR.HubConnectionBuilder()
-    .withUrl("http://localhost:5000/stocks")
+    .withUrl("http://127.0.0.1:57853/stocks")
     .build();
 
 hubConnection.start()

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using StockTickR.Hubs;
 
 namespace StockTickR
@@ -17,7 +18,7 @@ namespace StockTickR
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -26,9 +27,11 @@ namespace StockTickR
 
             app.UseFileServer();
 
-            app.UseSignalR(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapHub<StockTickerHub>("/stocks");
+                endpoints.MapHub<StockTickerHub>("/stocks");
             });
         }
     }
