@@ -32,7 +32,7 @@ namespace WindowsFormsSample
                 .WithUrl(addressTextBox.Text)
                 .Build();
 
-            _connection.On<string, string>("broadcastMessage", OnSend);
+            _connection.On<string, string>("broadcastMessage", (s1, s2) => OnSend(s1, s2));
 
             Log(Color.Gray, "Starting connection...");
             try
