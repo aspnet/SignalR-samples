@@ -34,15 +34,15 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, messageList);
         listView.setAdapter(arrayAdapter);
 
-        hubConnection.on("Send", (message)-> {
+        hubConnection.on("broadcastMessage", (name,message) -> {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    arrayAdapter.add(message);
+                    arrayAdapter.add(name+":"+message);
                     arrayAdapter.notifyDataSetChanged();
                 }
             });
-        }, String.class);
+        }, String.class,String.class);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 String message = editText.getText().toString();
                 editText.setText("");
                 try {
-                    hubConnection.send("Send", message);
+                    hubConnection.send("Send", Build.BRAND, message);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
