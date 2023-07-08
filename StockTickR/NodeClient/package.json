@@ -6,7 +6,7 @@
     "src/**/*"
   ],
   "devDependencies": {
-    "@microsoft/signalr": "3.0.0",
+    "@microsoft/signalr": "7.0.7",
     "@types/node": "^8.0.32"
   }
 }
